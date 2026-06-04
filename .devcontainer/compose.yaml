@@ -1,0 +1,18 @@
+services:
+  app:
+    image: ghcr.io/nerdgeschoss/nerdgeschoss/development-environment:4.0-24
+    volumes:
+      - ../..:/workspaces:cached
+      - ~/.netrc:/root/.netrc
+      - ~/.ssh:/root/.ssh
+      - ~/.config/gh:/root/.config/gh
+      - ~/.cache/devcontainer/playwright:/root/.cache/devcontainer/playwright
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+    environment:
+      TZ: Europe/Berlin
+      EDITOR: code --wait
+      PLAYWRIGHT_BROWSERS_PATH: /root/.cache/devcontainer/playwright
+      PLAYWRIGHT_SKIP_BROWSER_GC: 1 # Don't delete old browsers, they might be used by other projects
