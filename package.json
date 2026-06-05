@@ -13,6 +13,8 @@
     "vite-plugin-ruby": "^5.2.2"
   },
   "dependencies": {
-    "@hotwired/turbo-rails": "^8.0.23"
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.23",
+    "@nerdgeschoss/shimmer": "^0.0.44"
   }
 }

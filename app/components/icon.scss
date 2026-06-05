@@ -21,4 +21,16 @@
   &--link-off {
     mask-image: url("./icons/link-off.svg");
   }
+  &--expand-more {
+    mask-image: url("./icons/expand-more.svg");
+  }
+  &--groups {
+    mask-image: url("./icons/groups.svg");
+  }
+  &--check-circle {
+    mask-image: url("./icons/check-circle.svg");
+  }
+  &--radio-unchecked {
+    mask-image: url("./icons/radio-unchecked.svg");
+  }
 }

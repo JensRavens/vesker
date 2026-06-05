@@ -1,7 +1,8 @@
 module Components
   class Icon < Base
     # Available icons — each maps to an SVG file in icons/ that is masked in via CSS.
-    NAMES = ["favorite", "comment", "play", "close", "link-off"].freeze
+    NAMES = ["favorite", "comment", "play", "close", "link-off",
+      "expand-more", "groups", "check-circle", "radio-unchecked"].freeze
 
     prop :name, _Union(*NAMES)
     prop :size, Integer, default: 16
