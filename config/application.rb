@@ -14,7 +14,13 @@ module Vesker
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w[assets tasks])
+    config.autoload_lib(ignore: ["assets", "tasks"])
+
+    # All tables use UUID v7 primary keys (generated app-side in ApplicationRecord,
+    # since SQLite has no native uuid). String-typed PKs/FKs in every migration.
+    config.generators do |g|
+      g.orm :active_record, primary_key_type: :string
+    end
 
     # Configuration for the application, engines, and railties goes here.
     #

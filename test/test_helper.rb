@@ -2,13 +2,21 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
 
+# Minitest specs (describe/it) with RSpec matchers (expect), keeping Minitest's speed.
+require "minitest/spec"
+require "rspec/expectations/minitest_integration"
+
 module ActiveSupport
   class TestCase
     # Run tests in parallel with specified workers
     parallelize(workers: :number_of_processors)
 
-    # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
-    fixtures :all
+    # Write tests as Minitest specs: `describe`/`it` on top of ActiveSupport::TestCase
+    # (so each example still gets DB transactions + the Oaken dataset).
+    extend Minitest::Spec::DSL
+
+    # Seed the shared Oaken dataset before tests (replaces YAML fixtures).
+    include Oaken.loader.test_setup
 
     # Add more helper methods to be used by all tests here...
   end
