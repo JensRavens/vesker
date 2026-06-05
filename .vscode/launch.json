@@ -16,12 +16,18 @@
       "type": "ruby_lsp",
       "request": "launch",
       "program": "bin/rails server"
+    },
+    {
+      "name": "Vite",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bin/vite dev"
     }
   ],
   "compounds": [
     {
       "name": "Run App",
-      "configurations": ["Web", "Rails"],
+      "configurations": ["Web", "Rails", "Vite"],
       "stopAll": true,
       "presentation": {
         "group": "1_dev",

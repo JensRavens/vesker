@@ -2,7 +2,13 @@
   "name": "vesker",
   "private": true,
   "type": "module",
+  "browserslist": [
+    "defaults"
+  ],
   "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "playwright": "^1.60.0",
+    "sass": "^1.100.0",
     "vite": "^8.0.16",
     "vite-plugin-ruby": "^5.2.2"
   }

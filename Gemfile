@@ -16,6 +16,8 @@ gem "stimulus-rails"
 gem "jbuilder"
 gem "image_processing", "~> 1.2"
 gem "shimmer"
+gem "phlex-rails"
+gem "literal"
 gem "exifr"
 gem "activestorage-after_analyze_attached"
 gem "bootsnap", require: false
@@ -41,7 +43,7 @@ end
 
 group :test do
   gem "capybara"
-  gem "selenium-webdriver"
+  gem "capybara-playwright-driver"
   gem "rspec-expectations"
   gem "standard", require: false
   gem "rubocop-rails", require: false

@@ -1,0 +1,18 @@
+.icon {
+  flex: none;
+  display: inline-block;
+  background-color: currentColor;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+
+  &--favorite {
+    mask-image: url("./icons/favorite.svg");
+  }
+  &--comment {
+    mask-image: url("./icons/comment.svg");
+  }
+  &--play {
+    mask-image: url("./icons/play.svg");
+  }
+}

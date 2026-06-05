@@ -29,3 +29,15 @@
 
 en:
   hello: "Hello world"
+  date:
+    formats:
+      album_day: "%a, %b %-d"
+  components:
+    hero:
+      summary: "%{people} people · %{moments} moments"
+    day_section:
+      item_count:
+        one: "1 item"
+        other: "%{count} items"
+    footer:
+      message: "That's the trip so far ✦"

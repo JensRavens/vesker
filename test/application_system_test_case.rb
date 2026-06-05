@@ -1,14 +1,16 @@
 require "test_helper"
+require "capybara-playwright-driver"
+
+# Drive system tests with a real Chromium via Playwright (mirrors the
+# nerdgeschoss setup). The browser binary is installed with
+# `npx playwright install chromium`.
+Capybara.register_driver(:vesker_playwright) do |app|
+  Capybara::Playwright::Driver.new(app, browser_type: :chromium, headless: true)
+end
+
+Capybara.default_driver = Capybara.javascript_driver = :vesker_playwright
+Capybara.enable_aria_label = true
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
-  if ENV["CAPYBARA_SERVER_PORT"]
-    served_by host: "rails-app", port: ENV["CAPYBARA_SERVER_PORT"]
-
-    driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400], options: {
-      browser: :remote,
-      url: "http://#{ENV["SELENIUM_HOST"]}:4444"
-    }
-  else
-    driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400]
-  end
+  driven_by :vesker_playwright
 end

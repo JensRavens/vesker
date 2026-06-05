@@ -1,2 +1,5 @@
-// Vite entry point — import application JavaScript and stylesheets here.
-// Loaded in the layout via `vite_javascript_tag "application"`.
+import "../styles/reset.css";
+import "../styles/tokens.scss";
+
+// Colocated component stylesheets (each Phlex component ships its own SCSS; views carry none).
+import.meta.glob("../../components/**/*.scss", { eager: true });

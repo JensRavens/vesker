@@ -8,7 +8,15 @@ file_for = lambda do
   {io: File.open(path), filename: path.basename.to_s, content_type: "image/jpeg"}
 end
 
-album = albums.create(:lisbon, title: "Lisbon & the Algarve")
+# A real short clip for the video moments, so the duration (and poster) come from actual
+# Active Storage analysis (needs ffmpeg, see CLAUDE.md).
+video_path = Rails.root.join("db/seeds/files/videos/movie-short.mp4")
+video_for = lambda do
+  {io: File.open(video_path), filename: video_path.basename.to_s, content_type: "video/mp4"}
+end
+
+# Fixed slug so the album is trivial to open in development (/albums/test).
+album = albums.create(:lisbon, title: "Lisbon & the Algarve", slug: "test")
 
 # Ownerships: creator first (palette color 0 = ember), then the rest get incrementing colors.
 priya = ownerships.create(:priya, album:, role: :creator, user: users.create(:priya, unique_by: :email, name: "Priya", email: "priya@example.com"))
@@ -23,7 +31,7 @@ people = {priya:, marco:, lena:, jonas:, ada:, theo:}
 users.create(:nomad, unique_by: :email, name: "Nomad", email: "nomad@example.com")
 
 start = Time.utc(2026, 6, 14, 9, 0, 0)
-[
+items = [
   {key: :tram, kind: :photo, by: :priya, at: start},
   {key: :tiles, kind: :photo, by: :jonas, at: start + 33.minutes},
   {kind: :photo, by: :marco, at: start + 4.hours},
@@ -37,10 +45,24 @@ start = Time.utc(2026, 6, 14, 9, 0, 0)
   {key: :cliffs, kind: :photo, by: :jonas, at: start + 2.days},
   {kind: :photo, by: :ada, at: start + 2.days + 1.hour},
   {key: :lastnight, kind: :photo, by: :priya, at: start + 2.days + 9.hours}
-].each do |item|
-  table = (item[:kind] == :video) ? videos : photos
-  attrs = {album:, uploader: people.fetch(item[:by]), captured_at: item[:at], file: file_for.call}
-  item[:key] ? table.create(item[:key], **attrs) : table.create(**attrs)
+]
+
+# Triple the first two days (day 0: 6 -> 18, day 1: 4 -> 12) by adding extra photo
+# moments spread across each day, cycling uploaders, so the grid fills out.
+uploader_cycle = people.keys.cycle
+{0 => 12, 1 => 8}.each do |day, count|
+  count.times do |i|
+    items << {kind: :photo, by: uploader_cycle.next, at: start + day.days + (40 * (i + 1)).minutes}
+  end
+end
+
+items.each do |item|
+  video = item[:kind] == :video
+  table = video ? videos : photos
+  attrs = {album:, uploader: people.fetch(item[:by]), captured_at: item[:at], file: video ? video_for.call : file_for.call}
+  record = item[:key] ? table.create(item[:key], **attrs) : table.create(**attrs)
+  # Analyze videos up front so `duration` is available without waiting on the async job.
+  record.file.blob.analyze if video
 end
 
 # Likes (one per ownership per moment).
