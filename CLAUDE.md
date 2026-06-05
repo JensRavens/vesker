@@ -10,7 +10,7 @@ Currently only the **model layer** is built (models, schema, concerns, seeds, te
 
 ## Stack
 
-Rails 8.1 · Ruby 4.0 · **SQLite** · Hotwire (Turbo 8 + Stimulus) · Solid Queue/Cache/Cable · Active Storage. View layer (later) will be **Phlex** components.
+Rails 8.1 · Ruby 4.0 · **SQLite** · Hotwire (Turbo 8 + Stimulus) · Solid Queue/Cache/Cable · Active Storage · **Vite** (`vite_rails`) for JS bundling. View layer (later) will be **Phlex** components.
 
 ## Conventions (n.U.T.S — nerdgeschoss handbook)
 
@@ -58,9 +58,12 @@ bin/rails db:seed:replant                      # rebuild the Oaken dataset
 bin/rubocop                                     # Shimmer/StandardRB lint
 ```
 
+## Frontend
+
+JS/assets are bundled with **Vite** (`vite_rails`): entrypoint `app/frontend/entrypoints/application.js`, config in `config/vite.json` + `vite.config.ts`, loaded in the layout via `vite_client_tag` + `vite_javascript_tag "application"`. JS deps are managed with **npm** (node 24 / npm 11; not Bun). Build with `bin/vite build`; dev server via `bin/vite dev`. Hotwire JS isn't imported in the entrypoint yet — wire `@hotwired/turbo-rails`/Stimulus there when the view layer lands.
+
 ## Gotchas
 
-- **`bin/rails test` (no args) fails** on `test:prepare → javascript:build`: `package.json` is a bare `bun init` with no `build` script (frontend bundling never set up). Run specs by path instead. Setting up the JS build is a separate task.
 - **Video posters / capture-time for non-JPEG** need `ffmpeg` at runtime; `libvips` is present as a library here (dimensions get extracted) but the `vips`/`ffmpeg` CLIs aren't — so those paths run only where the tooling exists.
 - **Custom AS analyzer registration:** amend `config.active_storage.analyzers` inside `config.after_initialize` (`config/initializers/active_storage_analyzers.rb`) — the railtie copies config → `ActiveStorage.analyzers` in *its* after_initialize, so mutating the live array there gets overwritten.
 - After changing a not-yet-committed migration, roll back the later domain migrations (`bin/rails db:rollback STEP=n`), edit, then `db:migrate` — the six domain migrations are uncommitted.

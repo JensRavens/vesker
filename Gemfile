@@ -23,8 +23,7 @@ gem "tzinfo-data", platforms: [:windows, :jruby]
 
 # Assets
 gem "propshaft"
-gem "jsbundling-rails"
-gem "bundlebun"
+gem "vite_rails"
 
 # Deployment
 gem "kamal", require: false

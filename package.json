@@ -1,12 +1,9 @@
 {
   "name": "vesker",
-  "module": "index.ts",
-  "type": "module",
   "private": true,
+  "type": "module",
   "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
+    "vite": "^8.0.16",
+    "vite-plugin-ruby": "^5.2.2"
   }
 }
