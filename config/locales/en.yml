@@ -47,3 +47,8 @@ en:
       message: "That's the trip so far ✦"
     moment_detail:
       close: "Back to album"
+    not_found:
+      brand: "Vesker"
+      title: "This album link isn’t valid"
+      message: "Double-check the link you were sent — it may have a typo, or this album may no longer exist."
+      caption: "collecting small good moments ✦"

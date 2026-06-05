@@ -33,10 +33,25 @@
     }
   }
 
+  &--h2 {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.27;
+    letter-spacing: -0.01em;
+  }
+
   &--body {
     font-size: 15px;
     font-weight: 400;
     line-height: 1.45;
+  }
+
+  &--wordmark {
+    font-family: var(--font-brand);
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--color-accent);
   }
 
   &--caption-bold {
