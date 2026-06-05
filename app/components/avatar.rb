@@ -1,9 +1,10 @@
 module Components
   class Avatar < Base
     prop :ownership, Ownership
+    prop :size, Integer, default: 28
 
     def view_template
-      div(class: "avatar", style: "background: #{color}", title: @ownership.user.name) { initials }
+      div(class: "avatar", style: "background: #{color}; --avatar-size: #{@size}px", title: @ownership.user.name) { initials }
     end
 
     private

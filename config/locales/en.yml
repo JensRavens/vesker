@@ -32,6 +32,10 @@ en:
   date:
     formats:
       album_day: "%a, %b %-d"
+  time:
+    formats:
+      capture: "%a, %b %-d · %-I:%M %p"
+      comment: "%b %-d, %-I:%M %p"
   components:
     hero:
       summary: "%{people} people · %{moments} moments"
@@ -41,3 +45,5 @@ en:
         other: "%{count} items"
     footer:
       message: "That's the trip so far ✦"
+    moment_detail:
+      close: "Back to album"

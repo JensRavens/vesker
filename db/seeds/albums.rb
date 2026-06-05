@@ -75,6 +75,9 @@ end
 # Comments.
 comments.create(moment: photos.tram, author: lena, body: "this is SO lisbon")
 comments.create(moment: photos.rooftop, author: ada, body: "frame this one")
+comments.create(moment: photos.rooftop, author: marco, body: "the light here was unreal")
+comments.create(moment: photos.rooftop, author: lena, body: "we stayed until the bells")
+comments.create(moment: photos.rooftop, author: jonas, body: "best rooftop of the trip")
 comments.create(moment: photos.bluehour, author: priya, body: "my favourite of the trip")
 comments.create(moment: photos.lastnight, author: marco, body: "same time next year")
 comments.create(moment: photos.lastnight, author: jonas, body: "booking it now")

@@ -1,7 +1,7 @@
 .avatar {
   flex: none;
-  width: 28px;
-  height: 28px;
+  width: var(--avatar-size, 28px);
+  height: var(--avatar-size, 28px);
   border-radius: 50%;
   display: inline-flex;
   align-items: center;

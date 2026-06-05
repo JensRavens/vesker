@@ -1,3 +1,5 @@
+import "@hotwired/turbo-rails";
+
 import "../styles/reset.css";
 import "../styles/tokens.scss";
 

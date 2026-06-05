@@ -3,8 +3,11 @@ module Components
     prop :moment, Moment
 
     def view_template
-      div(class: "moment-tile", style: "background: #{gradient}") do
-        image_tag(@moment.file, width: 400, alt: "", class: "moment-tile__img") if @moment.file.attached?
+      a(href: album_moment_path(@moment.album, @moment), class: "moment-tile", style: "background: #{gradient}") do
+        if @moment.file.attached?
+          image_tag(@moment.file, width: 400, alt: "", class: "moment-tile__img",
+            style: "view-transition-name: moment-#{@moment.id}")
+        end
         span(class: "moment-tile__scrim")
         video_badge if video?
         counts if counts?
