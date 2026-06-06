@@ -3,8 +3,8 @@
 # Table name: ownerships
 #
 #  id            :string           not null, primary key
-#  color         :integer          not null
 #  moments_count :integer          default(0), not null
+#  position      :integer          not null
 #  role          :integer          default("contributor"), not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
@@ -12,8 +12,6 @@
 #  user_id       :string           not null
 #
 class Ownership < ApplicationRecord
-  include Palette
-
   belongs_to :user
   belongs_to :album
 
@@ -22,6 +20,10 @@ class Ownership < ApplicationRecord
   has_many :likes, dependent: :destroy
 
   enum :role, {contributor: 0, admin: 1, creator: 2}, default: :contributor
+
+  # Per-album order (the palette slot): a user's index in this list maps to their color.
+  positioned on: :album
+  default_scope { order(:position) }
 
   validates :user_id, uniqueness: {scope: :album_id}
   validate :single_creator_per_album

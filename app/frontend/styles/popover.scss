@@ -1,0 +1,18 @@
+// Chrome for the Shimmer popover (window.ui.popover) — shimmer ships no CSS for these.
+.popover {
+  z-index: 100;
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: 18px;
+  box-shadow:
+    0 8px 24px rgba(58, 38, 24, 0.1),
+    0 18px 48px rgba(58, 38, 24, 0.12);
+
+  &--loading {
+    opacity: 0;
+  }
+
+  &__arrow {
+    display: none;
+  }
+}

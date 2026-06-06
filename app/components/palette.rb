@@ -8,10 +8,5 @@ module Components
       rest = COLORS.drop(1)
       rest[(index - 1) % rest.size]
     end
-
-    def gradient(index)
-      color = hex(index)
-      "linear-gradient(135deg, #{color}, #{color}88)"
-    end
   end
 end

@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   resources :albums, only: :show do
     resources :moments, only: :show
+    get :people, on: :member
   end
   get "files/:id", to: "shimmer/files#show", as: :file
 

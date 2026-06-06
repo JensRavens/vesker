@@ -14,4 +14,9 @@ class Comment < ApplicationRecord
   belongs_to :author, class_name: "Ownership", inverse_of: :comments
 
   validates :body, presence: true, length: {maximum: 5_000}
+
+  # The author's color, derived from its position among the album's users.
+  def author_color
+    @author_color ||= Components::Palette.new.hex(moment.album.users.index { |user| user.id == author.user_id })
+  end
 end

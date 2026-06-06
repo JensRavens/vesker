@@ -2,7 +2,7 @@ module Components
   class MomentDetail < Base
     prop :album, Album
     prop :moment, Moment
-    prop :comments, Enumerable
+    prop :comments, _Enumerable(::Comment)
 
     def view_template
       div(class: "moment-detail") do
@@ -18,10 +18,20 @@ module Components
         a(href: album_path(@album), class: "moment-detail__close", aria_label: t(".close")) do
           icon(name: "close", size: 20)
         end
-        if @moment.file.attached?
+        if @moment.is_a?(Video)
+          player
+        elsif @moment.file.attached?
           image_tag(@moment.file, width: 1200, alt: "", class: "moment-detail__image",
             style: "view-transition-name: moment-#{@moment.id}")
         end
+      end
+    end
+
+    def player
+      video(class: "moment-detail__video", controls: true, playsinline: true, preload: "metadata",
+        poster: image_file_path(@moment.file, width: 1200),
+        style: "view-transition-name: moment-#{@moment.id}") do
+        source(src: rails_blob_path(@moment.file), type: @moment.file.content_type)
       end
     end
 
@@ -35,7 +45,7 @@ module Components
 
     def header
       div(class: "moment-detail__header") do
-        render Avatar.new(ownership: @moment.uploader, size: 34)
+        render Avatar.new(user: @moment.uploader.user, color: @moment.uploader_color, size: 34)
         div(class: "moment-detail__byline") do
           text(type: "caption-bold", element: :span) { @moment.uploader.user.name }
           text(type: "caption", element: :span, color: "muted") { l(@moment.captured_at, format: :capture) }

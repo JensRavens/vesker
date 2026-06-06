@@ -11,9 +11,27 @@
   }
 
   &__people {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
     margin-top: 14px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+  }
+
+  &__person {
+    display: inline-flex;
+    transition: opacity 0.15s;
+
+    &:not(:first-child) {
+      margin-left: -8px;
+    }
+
+    &--dimmed {
+      opacity: 0.3;
+    }
   }
 }

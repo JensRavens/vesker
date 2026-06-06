@@ -39,6 +39,11 @@ en:
   components:
     hero:
       summary: "%{people} people · %{moments} moments"
+      summary_filtered: "%{selected} of %{total} people"
+      filter: "Filter by person"
+    people_picker:
+      header: "Show photos from"
+      everyone: "Everyone"
     day_section:
       item_count:
         one: "1 item"

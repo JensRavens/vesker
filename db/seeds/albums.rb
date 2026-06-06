@@ -18,7 +18,8 @@ end
 # Fixed slug so the album is trivial to open in development (/albums/test).
 album = albums.create(:lisbon, title: "Lisbon & the Algarve", slug: "test")
 
-# Ownerships: creator first (palette color 0 = ember), then the rest get incrementing colors.
+# Ownerships: created creator-first; the positioning gem assigns `position` in creation order,
+# and a user's index in that order maps to their palette color (first = ember).
 priya = ownerships.create(:priya, album:, role: :creator, user: users.create(:priya, unique_by: :email, name: "Priya", email: "priya@example.com"))
 marco = ownerships.create(:marco, album:, role: :admin, user: users.create(:marco, unique_by: :email, name: "Marco", email: "marco@example.com"))
 lena = ownerships.create(:lena, album:, user: users.create(:lena, unique_by: :email, name: "Lena", email: "lena@example.com"))

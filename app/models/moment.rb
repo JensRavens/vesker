@@ -25,6 +25,11 @@ class Moment < ApplicationRecord
 
   scope :chronologic, -> { order(:captured_at, :id) }
 
+  # The uploader's color, derived from its position among the album's users.
+  def uploader_color
+    @uploader_color ||= Components::Palette.new.hex(album.users.index { |user| user.id == uploader.user_id })
+  end
+
   private
 
   def file_present

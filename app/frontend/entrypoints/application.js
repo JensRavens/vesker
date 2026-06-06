@@ -7,6 +7,10 @@ const application = Application.start();
 application.register("popover", PopoverController);
 start({ application });
 
+// Close any open popover before navigating, so its document click-outside listener
+// doesn't linger across the Turbo visit and swallow the next click.
+document.addEventListener("turbo:before-visit", () => window.ui?.popover?.close());
+
 import "../styles/reset.css";
 import "../styles/tokens.scss";
 import "../styles/popover.scss";

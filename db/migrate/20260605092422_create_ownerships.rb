@@ -4,7 +4,7 @@ class CreateOwnerships < ActiveRecord::Migration[8.1]
       t.references :user, null: false, foreign_key: true, type: :string
       t.references :album, null: false, foreign_key: true, type: :string, index: false
       t.integer :role, null: false, default: 0
-      t.integer :color, null: false
+      t.integer :position, null: false
       t.integer :moments_count, null: false, default: 0
 
       t.timestamps
@@ -12,5 +12,7 @@ class CreateOwnerships < ActiveRecord::Migration[8.1]
 
     # One participation per user per album; also serves album-scoped lookups (legend/filter).
     add_index :ownerships, [:album_id, :user_id], unique: true
+    # Positioning keeps `position` unique within the album scope.
+    add_index :ownerships, [:album_id, :position], unique: true
   end
 end

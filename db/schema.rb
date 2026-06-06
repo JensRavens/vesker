@@ -82,12 +82,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_05_092425) do
 
   create_table "ownerships", id: :string, force: :cascade do |t|
     t.string "album_id", null: false
-    t.integer "color", null: false
     t.datetime "created_at", null: false
     t.integer "moments_count", default: 0, null: false
+    t.integer "position", null: false
     t.integer "role", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "user_id", null: false
+    t.index ["album_id", "position"], name: "index_ownerships_on_album_id_and_position", unique: true
     t.index ["album_id", "user_id"], name: "index_ownerships_on_album_id_and_user_id", unique: true
     t.index ["user_id"], name: "index_ownerships_on_user_id"
   end

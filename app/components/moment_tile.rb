@@ -3,15 +3,15 @@ module Components
     prop :moment, Moment
 
     def view_template
-      a(href: album_moment_path(@moment.album, @moment), class: "moment-tile", style: "background: #{gradient}") do
+      a(href: album_moment_path(@moment.album, @moment), class: "moment-tile",
+        style: "background: #{gradient}; view-transition-name: moment-#{@moment.id}") do
         if @moment.file.attached?
-          image_tag(@moment.file, width: 400, alt: "", class: "moment-tile__img",
-            style: "view-transition-name: moment-#{@moment.id}")
+          image_tag(@moment.file, width: 400, alt: "", class: "moment-tile__img")
         end
         span(class: "moment-tile__scrim")
         video_badge if video?
         counts if counts?
-        span(class: "moment-tile__bar", style: "background: #{bar_color}")
+        span(class: "moment-tile__bar", style: "background: #{@moment.uploader_color}")
       end
     end
 
@@ -22,11 +22,8 @@ module Components
     end
 
     def gradient
-      Palette.new.gradient(@moment.uploader.color)
-    end
-
-    def bar_color
-      Palette.new.hex(@moment.uploader.color)
+      color = @moment.uploader_color
+      "linear-gradient(135deg, #{color}, #{color}88)"
     end
 
     def counts?

@@ -18,6 +18,7 @@ gem "image_processing", "~> 1.2"
 gem "shimmer"
 gem "phlex-rails"
 gem "literal"
+gem "positioning"
 gem "exifr"
 gem "activestorage-after_analyze_attached"
 gem "bootsnap", require: false
