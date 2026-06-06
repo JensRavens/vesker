@@ -55,15 +55,27 @@ module Components
 
     def action_bar
       div(class: "moment-detail__actions") do
-        stat("favorite", @moment.likes_count)
-        stat("comment", @moment.comments_count)
+        stat("favorite-outline", @moment.likes_count, size: 24)
+        stat("comment-outline", @moment.comments_count, size: 22)
+        download_button
       end
     end
 
-    def stat(name, count)
+    def stat(name, count, size:)
       div(class: "moment-detail__stat") do
-        icon(name:, size: 18)
+        icon(name:, size:)
         text(type: "caption-bold", element: :span) { count.to_s }
+      end
+    end
+
+    def download_button
+      a(
+        href: rails_blob_path(@moment.file, disposition: "attachment"),
+        class: "moment-detail__download",
+        download: @moment.file.filename.to_s,
+        aria_label: t(".download")
+      ) do
+        icon(name: "download", size: 23)
       end
     end
 

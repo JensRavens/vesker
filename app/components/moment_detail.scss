@@ -60,6 +60,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-hairline);
   }
 
   &__byline {
@@ -81,7 +83,20 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    color: var(--color-text-secondary);
+    color: var(--color-text);
+  }
+
+  &__download {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    transition: color 150ms ease;
+
+    &:hover {
+      color: var(--color-accent);
+    }
   }
 
   &__comments {

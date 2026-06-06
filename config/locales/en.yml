@@ -52,6 +52,7 @@ en:
       message: "That's the trip so far ✦"
     moment_detail:
       close: "Back to album"
+      download: "Download original"
     not_found:
       brand: "Vesker"
       title: "This album link isn’t valid"
