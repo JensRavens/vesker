@@ -1,11 +1,19 @@
-require "exifr/jpeg"
+require "json"
+require "time"
+require "vips"
 
-# Active Storage analyzer that adds a photo's original capture time (from JPEG EXIF, read
-# in pure Ruby) on upload. Prepended so it wins for JPEGs; it delegates to the analyzer
-# Active Storage would otherwise have used and merges that metadata (dimensions, etc.).
+# Active Storage analyzer that records a moment's original capture time on upload.
+#
+# - Images (JPEG, HEIC, …): EXIF DateTimeOriginal + OffsetTimeOriginal, read via libvips
+#   (exifr only handles JPEG, so HEIC fell through to the upload time).
+# - Videos: the container creation date via ffprobe. For Apple clips `creation_time` is the
+#   re-write/upload time, so we prefer `com.apple.quicktime.creationdate` (the real shot time).
+#
+# Prepended so it wins for any image/video; it delegates to the analyzer Active Storage would
+# otherwise have used and merges that metadata (dimensions, duration, …).
 class CaptureTimeAnalyzer < ActiveStorage::Analyzer
   def self.accept?(blob)
-    blob.content_type.to_s.start_with?("image/jpeg")
+    blob.image? || blob.video?
   end
 
   def metadata
@@ -20,10 +28,44 @@ class CaptureTimeAnalyzer < ActiveStorage::Analyzer
   end
 
   def captured_at
-    download_blob_to_tempfile do |file|
-      EXIFR::JPEG.new(file.path).date_time_original&.iso8601
-    end
+    blob.video? ? video_captured_at : image_captured_at
   rescue
     nil
+  end
+
+  def image_captured_at
+    download_blob_to_tempfile do |file|
+      image = Vips::Image.new_from_file(file.path)
+      stamp = exif(image, "exif-ifd2-DateTimeOriginal") || exif(image, "exif-ifd0-DateTime")
+      offset = exif(image, "exif-ifd2-OffsetTimeOriginal") || exif(image, "exif-ifd2-OffsetTime")
+      to_iso8601(stamp, offset)
+    end
+  end
+
+  def video_captured_at
+    tags = ffprobe_format_tags
+    stamp = tags["com.apple.quicktime.creationdate"].presence || tags["creation_time"].presence
+    stamp && Time.parse(stamp).iso8601
+  end
+
+  # The libvips EXIF getter returns "<value> (<value>, <type>, …)"; keep just the value.
+  def exif(image, field)
+    image.get(field).to_s.split(" (").first.presence
+  rescue Vips::Error
+    nil
+  end
+
+  # EXIF stamps look like "2004:09:09 15:14:26"; only the date half uses colons.
+  def to_iso8601(stamp, offset)
+    return nil if stamp.blank?
+    naive = stamp.sub(":", "-").sub(":", "-")
+    Time.parse(offset ? "#{naive} #{offset}" : naive).iso8601
+  end
+
+  def ffprobe_format_tags
+    download_blob_to_tempfile do |file|
+      output = IO.popen(["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", file.path], &:read)
+      JSON.parse(output).dig("format", "tags") || {}
+    end
   end
 end
