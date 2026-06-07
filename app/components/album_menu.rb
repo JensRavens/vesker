@@ -2,9 +2,11 @@ module Components
   class AlbumMenu < Base
     prop :album, Album
     prop :current_user, _Nilable(User), default: nil
+    prop :can_rename, _Boolean, default: false
 
     def view_template
       div(class: "album-menu") do
+        rename_row if @can_rename
         share_row
         download_row(t(".download_all"), t(".download_all_sub"), "photo-library", download_album_path(@album))
         if @current_user
@@ -15,6 +17,14 @@ module Components
     end
 
     private
+
+    # Opens the rename modal (creator only; modal_controller closes this popover on open).
+    def rename_row
+      button(type: "button", class: "album-menu__row",
+        data: {controller: "modal", action: "modal#open", modal_url_value: edit_album_path(@album)}) do
+        row_body(t(".rename"), t(".rename_sub"), "edit")
+      end
+    end
 
     # Opens the share/QR modal (modal_controller closes this popover on open).
     def share_row

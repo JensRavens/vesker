@@ -7,6 +7,7 @@ module Components
     prop :comments, _Enumerable(::Comment)
     prop :current_user, _Nilable(User), default: nil
     prop :liked, _Boolean, default: false
+    prop :can_delete, _Boolean, default: false
 
     def view_template
       div(class: "moment-detail") do
@@ -62,6 +63,7 @@ module Components
         like_button
         stat("comment-outline", @moment.comments_count, size: 22)
         download_button
+        delete_button if @can_delete
       end
     end
 
@@ -111,6 +113,17 @@ module Components
         aria_label: t(".download")
       ) do
         icon(name: "download", size: 23)
+      end
+    end
+
+    # Opens the confirm-delete modal (the actual DELETE is submitted from there).
+    def delete_button
+      button(
+        type: "button", class: "moment-detail__delete", aria_label: t(".delete"),
+        data: {controller: "modal", action: "modal#open",
+               modal_url_value: confirm_delete_album_moment_path(@album, @moment)}
+      ) do
+        icon(name: "delete", size: 23)
       end
     end
 

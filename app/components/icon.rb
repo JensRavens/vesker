@@ -4,7 +4,8 @@ module Components
     NAMES = ["favorite", "favorite-outline", "comment", "comment-outline", "download",
       "play", "close", "link-off", "expand-more", "groups", "check-circle", "radio-unchecked",
       "alternate-email", "add-photo", "refresh", "error", "more-horiz", "share",
-      "photo-library", "filter-none", "content-copy", "check", "info"].freeze
+      "photo-library", "filter-none", "content-copy", "check", "info",
+      "delete", "edit"].freeze
 
     prop :name, _Union(*NAMES)
     prop :size, Integer, default: 16

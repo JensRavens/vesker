@@ -1,8 +1,14 @@
 class AlbumsController < ApplicationController
   include ZipKit::RailsStreaming
+  include Shimmer::RemoteNavigation
 
   def new
-    redirect_to Album.create!
+    album = Album.transaction do
+      album = Album.create!
+      album.ownerships.create!(user: current_user, role: :creator)
+      album
+    end
+    redirect_to album
   end
 
   def show
@@ -30,10 +36,27 @@ class AlbumsController < ApplicationController
     render Components::PeoplePicker.new(album: @album, users: @users, selected_user_ids: @selected_user_ids), layout: false
   end
 
-  # Overflow-menu popover content (share + downloads). The "except mine" row is gated on login.
+  # Overflow-menu popover content (share + downloads). The "except mine" row is gated on login;
+  # the rename row is gated on being the album's creator.
   def menu
     @album = Album.find_by!(slug: params[:id])
-    render Components::AlbumMenu.new(album: @album, current_user:), layout: false
+    render Components::AlbumMenu.new(album: @album, current_user:, can_rename: policy(@album).update?), layout: false
+  end
+
+  # The rename modal (lazy-loaded into the Shimmer modal), creator only.
+  def edit
+    @album = Album.find_by!(slug: params[:id])
+    authorize @album, :edit?
+
+    render Views::Albums::Edit.new(album: @album), layout: false
+  end
+
+  def update
+    @album = Album.find_by!(slug: params[:id])
+    authorize @album
+
+    @album.update(params.expect(album: [:title]))
+    ui.navigate_to(album_path(@album))
   end
 
   # Share/QR modal content. The QR encodes the full album URL so it scans from another device.

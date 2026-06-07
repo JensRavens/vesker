@@ -1,6 +1,6 @@
 module Components
   class Button < Base
-    VARIANTS = [:primary, :ghost].freeze
+    VARIANTS = [:primary, :ghost, :danger].freeze
     TYPES = [:button, :submit].freeze
 
     prop :variant, _Union(*VARIANTS), default: :primary

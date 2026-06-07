@@ -12,6 +12,11 @@
     background: var(--color-accent-soft);
   }
 
+  &--danger &__icon {
+    color: var(--color-danger);
+    background: var(--color-danger-soft);
+  }
+
   // Keep the subhead's line length comfortable (own wrapper — never style Text).
   &__subhead {
     max-width: 300px;

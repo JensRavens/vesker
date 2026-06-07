@@ -27,6 +27,23 @@
     }
   }
 
+  &--danger {
+    padding: 13px 22px;
+    font-size: 16px;
+    color: var(--color-text-inverse);
+    background: var(--color-danger);
+    border-radius: 14px;
+    transition: background 150ms ease, transform 120ms ease;
+
+    &:hover {
+      background: var(--color-accent-pressed);
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+
   &--ghost {
     padding: 8px;
     font-size: 15px;

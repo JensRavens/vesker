@@ -1,13 +1,16 @@
 module Components
   class ModalCard < Base
+    TONES = [:accent, :danger].freeze
+
     prop :icon, _Union(*Icon::NAMES)
     prop :title, String
     prop :subhead, _Nilable(String), default: nil
+    prop :tone, _Union(*TONES), default: :accent
 
     # Yields the body (a form, buttons, …) below the heading. The body composes
     # general components (Field via the form builder, Button) — the card styles none of them.
     def view_template(&)
-      div(class: "modal-card") do
+      div(class: "modal-card modal-card--#{@tone}") do
         stack(gap: 16, align: "center") do
           div(class: "modal-card__icon") do
             icon(name: @icon, size: 26)

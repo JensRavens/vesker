@@ -25,6 +25,11 @@ class Moment < ApplicationRecord
 
   scope :chronologic, -> { order(:captured_at, :id) }
 
+  # STI: Photo/Video share the moment-level authorization rules.
+  def policy_class
+    MomentPolicy
+  end
+
   # The uploader's color, derived from its position among the album's users.
   def uploader_color
     @uploader_color ||= Components::Palette.new.hex(album.users.index { |user| user.id == uploader.user_id })

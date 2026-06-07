@@ -44,12 +44,23 @@ en:
       add: "Add photos"
       menu: "More"
     album_menu:
+      rename: "Change name"
+      rename_sub: "Update the album title"
       share: "Share this album"
       share_sub: "Link & QR code"
       download_all: "Download everything"
       download_all_sub: "Zips the whole album"
       download_others: "Everything except mine"
       download_others_sub: "Skip photos you uploaded"
+    confirm_delete:
+      title: "Delete this item?"
+      body: "This removes the photo or video for everyone, along with its likes and comments. This can’t be undone."
+      confirm: "Delete"
+      cancel: "Cancel"
+    rename_card:
+      title: "Name this album"
+      placeholder: "Trip to…"
+      save: "Save"
     share_card:
       title: "Share this album"
       copy: "Copy"
@@ -83,6 +94,7 @@ en:
       download: "Download original"
       like: "Like"
       unlike: "Remove like"
+      delete: "Delete"
     not_found:
       brand: "Vesker"
       title: "This album link isn’t valid"
