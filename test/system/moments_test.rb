@@ -22,11 +22,11 @@ class MomentsTest < ApplicationSystemTestCase
     it "lets the uploader delete it via the confirm modal, returning to the grid" do
       album = albums.lisbon
       moment = photos.rooftop # uploaded by Priya
+
+      login users.priya
       visit album_moment_path(album, moment)
 
-      log_in_as "priya@example.com"
-
-      # The trashcan now shows; opening it asks to confirm before deleting.
+      # The trashcan shows; opening it asks to confirm before deleting.
       find("button[aria-label='Delete']").click
       within ".modal__frame" do
         expect(page).to have_text("Delete this item?")
@@ -38,24 +38,5 @@ class MomentsTest < ApplicationSystemTestCase
       expect(page).to have_no_css("a[href='#{album_moment_path(album, moment)}']")
       expect(Moment.exists?(moment.id)).to eq(false)
     end
-  end
-
-  private
-
-  # Logs in through the like modal on the current moment page, then waits for the
-  # logged-in morph to settle. The session verify navigates back to the referer.
-  def log_in_as(email)
-    find("button[aria-label='Like']").click
-    within ".modal__frame" do
-      fill_in "email", with: email
-      click_button "Continue"
-    end
-    run_jobs
-    code = last_mail!.text[/\b\d{6}\b/]
-    within ".modal__frame" do
-      fill_in "code", with: code
-      click_button "Confirm"
-    end
-    expect(page).to have_no_css(".modal--open")
   end
 end

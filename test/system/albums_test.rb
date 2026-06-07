@@ -36,11 +36,10 @@ class AlbumsTest < ApplicationSystemTestCase
 
     it "lets the creator rename the album from the overflow menu" do
       album = albums.lisbon
-      visit album_moment_path(album, album.moments.chronologic.first)
 
-      log_in_as "priya@example.com" # Priya is the album creator
-
+      login users.priya # Priya is the album creator
       visit album_path(album)
+
       find("button.hero__menu").click
       within ".popover" do
         click_button "Change name"
@@ -53,24 +52,5 @@ class AlbumsTest < ApplicationSystemTestCase
       expect(page).to have_no_css(".modal--open")
       expect(page).to have_content("Summer in Portugal")
     end
-  end
-
-  private
-
-  # Logs in through the like modal on the current moment page, then waits for the
-  # logged-in morph to settle. The session verify navigates back to the referer.
-  def log_in_as(email)
-    find("button[aria-label='Like']").click
-    within ".modal__frame" do
-      fill_in "email", with: email
-      click_button "Continue"
-    end
-    run_jobs
-    code = last_mail!.text[/\b\d{6}\b/]
-    within ".modal__frame" do
-      fill_in "code", with: code
-      click_button "Confirm"
-    end
-    expect(page).to have_no_css(".modal--open")
   end
 end
