@@ -2,6 +2,13 @@ class AlbumsController < ApplicationController
   include ZipKit::RailsStreaming
   include Shimmer::RemoteNavigation
 
+  before_action :require_login, only: :new
+
+  # The site root: a landing page prompting the visitor to create an album.
+  def index
+    render Views::Albums::Index.new(current_user:)
+  end
+
   def new
     album = Album.transaction do
       album = Album.create!

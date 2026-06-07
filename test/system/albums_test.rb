@@ -24,6 +24,31 @@ class AlbumsTest < ApplicationSystemTestCase
     end
   end
 
+  describe "the landing page" do
+    it "prompts anonymous visitors to log in before creating" do
+      visit root_path
+
+      expect(page).to have_content("Create an album")
+      click_button "Create an album"
+      within ".modal__frame" do
+        expect(page).to have_text("Add your name to the album")
+      end
+    end
+
+    it "creates an album for a logged-in visitor and opens it" do
+      login users.priya
+      visit root_path
+
+      click_link "Create an album"
+
+      # Lands on the freshly-created album, owned by the visitor.
+      expect(page).to have_current_path(%r{\A/albums/})
+      album = Album.order(:created_at).last
+      expect(page).to have_current_path(album_path(album))
+      expect(album.creator).to eq(users.priya)
+    end
+  end
+
   describe "renaming the album" do
     it "hides the rename action from anonymous visitors" do
       visit album_path(albums.lisbon)

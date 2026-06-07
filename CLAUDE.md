@@ -8,7 +8,7 @@ Guidance for working in this repo. Keep it current as conventions evolve.
 
 A **shared photo-album service** (built from a Claude Design handoff). People create an album, share an unguessable link, and everyone's photos/videos land in one timeline. There is **no public feed, no directory, no "my albums" dashboard** — the album's `slug` is the only way in.
 
-The **model layer** and these screens are built (Phlex views — see *View layer*): the album timeline (`Albums#show` — day-grouped grid + a participant **people-filter** popover), the single-moment detail (`Moments#show` — photo or `<video>` player + comments sidebar), and a custom not-found page. Open the seeded album in dev at **`/albums/test`** (fixed slug).
+The **model layer** and these screens are built (Phlex views — see *View layer*): the **landing page** (`Albums#index`, the site **root** — "Create an album" CTA, login-gated), the album timeline (`Albums#show` — day-grouped grid + a participant **people-filter** popover), the single-moment detail (`Moments#show` — photo or `<video>` player + comments sidebar), and a custom not-found page. Open the seeded album in dev at **`/albums/test`** (fixed slug).
 
 ## Stack
 
@@ -45,6 +45,7 @@ Rails 8.1 · Ruby 4.0 · **SQLite** · Hotwire (Turbo 8 + Stimulus) · Solid Que
 ## Routing & controllers
 
 Everything is scoped by the album slug (the access key):
+- `GET /` (root) → `Albums#index` — the **landing page** (`Views::Albums::Index` → `Components::Landing`). Its "Create an album" CTA is login-gated like the hero's Add-photos button: logged out it opens the login modal (`new_session_path`), logged in it's an `<a href=new_album_path>`. `GET /albums/new` → `Albums#new` (`before_action :require_login`) **creates** an album + the creator `Ownership` (current_user) and redirects to it — a GET with a side effect, by design.
 - `GET /albums/:id` → `Albums#show` (`:id` is the slug; `Album#to_param` returns `slug`). Reads `?people=<user_id>,…` to filter.
 - `GET /albums/:id/people` → `Albums#people` (**member action**) — renders the `Components::PeoplePicker` popover fragment with `layout: false`.
 - `GET /albums/:album_id/moments/:id` → `Moments#show` — the moment is fetched via `@album.moments.find(...)`, so it's only reachable through its own album's slug (a valid id under the wrong slug → 404).
