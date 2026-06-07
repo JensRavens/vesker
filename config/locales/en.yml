@@ -53,8 +53,26 @@ en:
     moment_detail:
       close: "Back to album"
       download: "Download original"
+      like: "Like"
+      unlike: "Remove like"
     not_found:
       brand: "Vesker"
       title: "This album link isn’t valid"
       message: "Double-check the link you were sent — it may have a typo, or this album may no longer exist."
       caption: "collecting small good moments ✦"
+  views:
+    sessions:
+      new:
+        title: "Add your name to the album"
+        subhead: "Pop in your email so we can label what you like. No password — viewing is always free."
+        placeholder: "you@email.com"
+        submit: "Continue"
+        dismiss: "Not now"
+      verify:
+        title: "Check your email"
+        subhead: "Enter the 6-digit code we just sent to %{email}."
+        submit: "Confirm"
+        change_email: "Use a different email"
+  sessions:
+    verify:
+      invalid_code: "That code isn’t right or has expired. Try again."

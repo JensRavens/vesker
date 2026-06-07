@@ -4,7 +4,8 @@ module Components
     COLORS = {
       "default" => "--color-text",
       "secondary" => "--color-text-secondary",
-      "muted" => "--color-text-muted"
+      "muted" => "--color-text-muted",
+      "danger" => "--color-danger"
     }.freeze
 
     prop :type, String

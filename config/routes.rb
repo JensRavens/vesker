@@ -5,8 +5,16 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up", to: "rails/health#show", as: :rails_health_check
 
+  # Passwordless login (two steps, rendered inside a modal): email → emailed code.
+  resource :session, only: [:new, :create], path: "login" do
+    patch :verify, on: :collection
+  end
+  delete "logout", to: "sessions#destroy"
+
   resources :albums, only: :show do
-    resources :moments, only: :show
+    resources :moments, only: :show do
+      resource :like, only: [:create, :destroy]
+    end
     get :people, on: :member
   end
   get "files/:id", to: "shimmer/files#show", as: :file

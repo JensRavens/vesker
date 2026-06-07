@@ -1,8 +1,12 @@
 module Components
   class MomentDetail < Base
+    include Phlex::Rails::Helpers::FormWith
+
     prop :album, Album
     prop :moment, Moment
     prop :comments, _Enumerable(::Comment)
+    prop :current_user, _Nilable(User), default: nil
+    prop :liked, _Boolean, default: false
 
     def view_template
       div(class: "moment-detail") do
@@ -55,10 +59,41 @@ module Components
 
     def action_bar
       div(class: "moment-detail__actions") do
-        stat("favorite-outline", @moment.likes_count, size: 24)
+        like_button
         stat("comment-outline", @moment.comments_count, size: 22)
         download_button
       end
+    end
+
+    # Logged out → the heart opens the login modal. Logged in → it toggles a like
+    # (the page morphs into the liked/unliked version on redirect).
+    def like_button
+      if @current_user
+        like_form
+      else
+        button(
+          type: "button", class: "moment-detail__stat moment-detail__like",
+          aria_label: t(".like"),
+          data: {controller: "modal", action: "modal#open", modal_url_value: new_session_path}
+        ) { like_content }
+      end
+    end
+
+    def like_form
+      # form_with handles the CSRF token and the `_method` override for us.
+      form_with(url: album_moment_like_path(@album, @moment), method: (@liked ? :delete : :post),
+        class: "moment-detail__like-form") do
+        button(
+          type: "submit",
+          class: "moment-detail__stat moment-detail__like#{" moment-detail__like--on" if @liked}",
+          aria_label: @liked ? t(".unlike") : t(".like")
+        ) { like_content }
+      end
+    end
+
+    def like_content
+      icon(name: @liked ? "favorite" : "favorite-outline", size: 24)
+      text(type: "caption-bold", element: :span) { @moment.likes_count.to_s }
     end
 
     def stat(name, count, size:)

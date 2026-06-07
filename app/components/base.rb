@@ -20,6 +20,10 @@ class Components::Base < Phlex::HTML
     render(Components::Stack.new(**attributes), &)
   end
 
+  def box(**attributes, &)
+    render(Components::Box.new(**attributes), &)
+  end
+
   def icon(**attributes, &)
     render(Components::Icon.new(**attributes), &)
   end

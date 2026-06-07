@@ -34,6 +34,7 @@ gem "thruster", require: false
 
 group :development, :test do
   gem "debug", platforms: [:mri, :windows], require: "debug/prelude"
+  gem "dotenv-rails"
   gem "oaken"
 end
 

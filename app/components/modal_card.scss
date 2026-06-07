@@ -1,0 +1,23 @@
+.modal-card {
+  text-align: center;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    color: var(--color-accent);
+    background: var(--color-accent-soft);
+  }
+
+  // Keep the subhead's line length comfortable (own wrapper — never style Text).
+  &__subhead {
+    max-width: 300px;
+  }
+
+  &__body {
+    width: 100%;
+  }
+}

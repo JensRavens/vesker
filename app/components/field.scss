@@ -1,0 +1,22 @@
+.field {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  color: var(--color-text);
+  background: var(--color-surface-sunk);
+  border: 1px solid var(--color-hairline);
+  border-radius: 14px;
+  outline: none;
+
+  &:focus {
+    border-color: var(--color-accent);
+  }
+
+  &--code {
+    text-align: center;
+    letter-spacing: 0.4em;
+    font-weight: 700;
+  }
+}

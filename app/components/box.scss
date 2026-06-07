@@ -1,0 +1,15 @@
+.box {
+  padding: var(--box-pt) var(--box-pr) var(--box-pb) var(--box-pl);
+
+  @media only screen and (min-width: 640px) {
+    padding: var(--box-pt-tablet) var(--box-pr-tablet) var(--box-pb-tablet) var(--box-pl-tablet);
+  }
+
+  @media only screen and (min-width: 890px) {
+    padding: var(--box-pt-desktop) var(--box-pr-desktop) var(--box-pb-desktop) var(--box-pl-desktop);
+  }
+
+  @media only screen and (min-width: 1280px) {
+    padding: var(--box-pt-widescreen) var(--box-pr-widescreen) var(--box-pb-widescreen) var(--box-pl-widescreen);
+  }
+}

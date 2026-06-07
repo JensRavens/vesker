@@ -6,6 +6,8 @@ require "rails/test_help"
 require "minitest/spec"
 require "rspec/expectations/minitest_integration"
 
+require_relative "support/mail_helper"
+
 module ActiveSupport
   class TestCase
     # Run tests in parallel with specified workers
@@ -18,6 +20,7 @@ module ActiveSupport
     # Seed the shared Oaken dataset before tests (replaces YAML fixtures).
     include Oaken.loader.test_setup
 
-    # Add more helper methods to be used by all tests here...
+    # Friendly email assertions (last_mail/run_jobs) + a clean deliveries box per test.
+    include MailHelper
   end
 end

@@ -9,8 +9,6 @@
 #  updated_at :datetime         not null
 #
 class User < ApplicationRecord
-  include Authentication
-
   has_many :ownerships, dependent: :destroy
   has_many :albums, through: :ownerships
 

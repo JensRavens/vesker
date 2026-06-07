@@ -1,0 +1,114 @@
+// Chrome for the Shimmer modal (window.ui.modal) — shimmer ships no CSS for these.
+// DOM: body > .modal-blind (scrim) and body > .modal > .modal__content
+//      > (.modal__close + .modal__frame). Our Phlex fragment lands in .modal__frame.
+
+.modal-blind {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  background: rgba(26, 22, 17, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+
+body.modal-open .modal-blind {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+
+  &--open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  // Keep hidden until the fragment has loaded, then it pops in.
+  &--loading {
+    opacity: 0;
+  }
+
+  &__content {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    padding: 24px;
+    background: var(--color-surface);
+    border-radius: 24px;
+    box-shadow:
+      0 8px 24px rgba(58, 38, 24, 0.1),
+      0 18px 48px rgba(58, 38, 24, 0.14);
+    animation: modal-pop 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  &__close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-surface-sunk);
+    cursor: pointer;
+
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 13px;
+      height: 1.5px;
+      background: var(--color-text-secondary);
+      border-radius: 1px;
+    }
+
+    &::before {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    &::after {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+  }
+}
+
+@keyframes modal-pop {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+}
+
+// Mobile: dock to the bottom as a sheet.
+@media (max-width: 640px) {
+  .modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal__content {
+    max-width: none;
+    padding: 24px 20px 32px;
+    border-radius: 28px 28px 0 0;
+    animation: modal-slide 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes modal-slide {
+    from {
+      transform: translateY(100%);
+    }
+  }
+}

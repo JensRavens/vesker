@@ -86,6 +86,28 @@
     color: var(--color-text);
   }
 
+  // The like control reuses &__stat layout but is a button/form submit.
+  &__like-form {
+    display: contents;
+  }
+
+  &__like {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    transition: color 150ms ease;
+
+    &:hover {
+      color: var(--color-accent);
+    }
+
+    &--on {
+      color: var(--color-accent);
+    }
+  }
+
   &__download {
     margin-left: auto;
     display: inline-flex;
@@ -119,12 +141,16 @@
 
 // On the album → moment transition the photo morphs and the backdrop cross-fades (root);
 // the sidebar slides in from the right (and back out on the way to the album).
-::view-transition-new(moment-detail-sidebar) {
-  animation: moment-detail-sidebar-in 320ms cubic-bezier(0.32, 0.72, 0, 1) both;
-}
+// Only on a navigation (Turbo render method "replace") — a same-page morph (e.g.
+// toggling a like) keeps the default cross-fade so the sidebar doesn't re-slide in.
+html:not([data-turbo-render-method="morph"]) {
+  &::view-transition-new(moment-detail-sidebar) {
+    animation: moment-detail-sidebar-in 320ms cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
 
-::view-transition-old(moment-detail-sidebar) {
-  animation: moment-detail-sidebar-out 240ms cubic-bezier(0.4, 0, 1, 1) both;
+  &::view-transition-old(moment-detail-sidebar) {
+    animation: moment-detail-sidebar-out 240ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
 }
 
 @keyframes moment-detail-sidebar-in {
