@@ -45,4 +45,13 @@
   &--alternate-email {
     mask-image: url("./icons/alternate-email.svg");
   }
+  &--add-photo {
+    mask-image: url("./icons/add-photo.svg");
+  }
+  &--refresh {
+    mask-image: url("./icons/refresh.svg");
+  }
+  &--error {
+    mask-image: url("./icons/error.svg");
+  }
 }

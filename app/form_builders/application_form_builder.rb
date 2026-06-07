@@ -16,7 +16,12 @@ class ApplicationFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def button(value = nil, options = {}, &block)
-    component = Components::Button.new(type: :submit, variant: options.delete(:variant) || :primary)
+    component = Components::Button.new(
+      type: :submit,
+      variant: options.delete(:variant) || :primary,
+      disabled: options.delete(:disabled) || false,
+      data: options.delete(:data)
+    )
     block ? @template.render(component, &block) : @template.render(component) { value }
   end
 

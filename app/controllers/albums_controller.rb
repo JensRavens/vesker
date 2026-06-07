@@ -1,4 +1,8 @@
 class AlbumsController < ApplicationController
+  def new
+    redirect_to Album.create!
+  end
+
   def show
     @album = Album.find_by!(slug: params[:id])
     @users = @album.users
@@ -10,7 +14,8 @@ class AlbumsController < ApplicationController
     end
 
     render Views::Albums::Show.new(
-      album: @album, moments: @moments, users: @users, selected_user_ids: @selected_user_ids
+      album: @album, moments: @moments, users: @users,
+      selected_user_ids: @selected_user_ids, current_user:
     )
   end
 

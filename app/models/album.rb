@@ -26,4 +26,14 @@ class Album < ApplicationRecord
   def to_param
     slug
   end
+
+  # The user's ownership in this album, joining them as a contributor on first
+  # contribution (liking, uploading). find_or_create_by! (not create_or_find_by!)
+  # because Ownership's uniqueness validation fires before the DB constraint; the
+  # rescue covers the rare concurrent first-time join.
+  def ownership_for(user)
+    ownerships.find_or_create_by!(user:)
+  rescue ActiveRecord::RecordNotUnique
+    retry
+  end
 end

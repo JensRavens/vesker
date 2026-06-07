@@ -92,6 +92,41 @@ body.modal-open .modal-blind {
   }
 }
 
+// Sidebar variant (window.ui.modal.open({ size: "sidebar" })): a right-docked,
+// full-height drawer that slides in from the edge (e.g. the upload panel). On
+// mobile the media query below keeps it a bottom sheet.
+.modal--sidebar {
+  align-items: stretch;
+  justify-content: flex-end;
+  padding: 0;
+
+  .modal__content {
+    width: 460px;
+    max-width: 88%;
+    height: 100%;
+    padding: 0;
+    border-radius: 0;
+    overflow: hidden; // the panel's own body scrolls; chrome (header/footer) stays put
+    animation: modal-slide-right 360ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  // Shimmer wraps the fragment in .modal__frame; it must carry the full height too,
+  // otherwise the height:100% chain breaks here and the panel grows past the viewport
+  // (no scroll). Make it the flex column so the sidebar's body becomes the scroll area.
+  .modal__frame {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@keyframes modal-slide-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+
 // Mobile: dock to the bottom as a sheet.
 @media (max-width: 640px) {
   .modal {

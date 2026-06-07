@@ -16,6 +16,7 @@
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.23",
-    "@nerdgeschoss/shimmer": "^0.0.44"
+    "@nerdgeschoss/shimmer": "^0.0.44",
+    "@rails/activestorage": "^8.1.300"
   }
 }

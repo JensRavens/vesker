@@ -22,6 +22,11 @@ class ApplicationController < ActionController::Base
     @login ||= Login.new(cookies)
   end
 
+  # Controllers that need a signed-in user opt in with `before_action :require_login`.
+  def require_login
+    head :unauthorized unless current_user
+  end
+
   private
 
   # Resolves the logged-in user (from the encrypted cookie) into the per-request Current.

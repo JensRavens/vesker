@@ -3,7 +3,7 @@ module Components
     # Available icons — each maps to an SVG file in icons/ that is masked in via CSS.
     NAMES = ["favorite", "favorite-outline", "comment", "comment-outline", "download",
       "play", "close", "link-off", "expand-more", "groups", "check-circle", "radio-unchecked",
-      "alternate-email"].freeze
+      "alternate-email", "add-photo", "refresh", "error"].freeze
 
     prop :name, _Union(*NAMES)
     prop :size, Integer, default: 16

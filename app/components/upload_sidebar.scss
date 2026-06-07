@@ -1,0 +1,234 @@
+.upload-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  font-family: var(--font-ui);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 20px 20px 14px;
+    border-bottom: 0.5px solid var(--color-hairline);
+  }
+
+  &__cancel {
+    flex: none;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-accent);
+    cursor: pointer;
+  }
+
+  &__count {
+    flex: none;
+    min-width: 1.5ch;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: right;
+    color: var(--color-text-muted);
+  }
+
+  &__body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 20px;
+  }
+
+  &__dropzone {
+    position: relative;
+    border: 2px dashed var(--color-hairline);
+    border-radius: 18px;
+    background: var(--color-surface-sunk);
+    transition: border-color 150ms ease, background 150ms ease;
+
+    &:hover,
+    &:focus-within {
+      border-color: var(--color-accent);
+      background: var(--color-accent-soft);
+    }
+  }
+
+  &__input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  &__dropzone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 30px 20px;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  &__dropzone-icon {
+    display: inline-flex;
+    color: var(--color-accent);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  // A file still waiting for an upload slot reads as inactive.
+  &__row[data-state="queued"] {
+    opacity: 0.55;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__thumb {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background:
+      linear-gradient(135deg, var(--color-surface-sunk), var(--color-hairline)) center / cover no-repeat;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__track {
+    height: 5px;
+    border-radius: 999px;
+    background: var(--color-surface-sunk);
+    overflow: hidden;
+  }
+
+  &__bar {
+    width: 0;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--color-accent);
+    transition: width 320ms ease;
+  }
+
+  &__retry {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-accent);
+    cursor: pointer;
+  }
+
+  &__status {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+
+  &__status-done,
+  &__status-failed {
+    display: none;
+  }
+
+  &__remove {
+    flex: none;
+    display: inline-flex;
+    padding: 4px;
+    border: 0;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+
+  // Per-state presentation, driven by the row's data-state.
+  &__row[data-state="done"] {
+    .upload-sidebar__bar {
+      width: 100% !important;
+      background: var(--color-success);
+    }
+
+    .upload-sidebar__status {
+      color: var(--color-success);
+    }
+
+    .upload-sidebar__status-done {
+      display: inline-flex;
+    }
+
+    .upload-sidebar__remove {
+      display: none;
+    }
+  }
+
+  &__row[data-state="failed"] {
+    .upload-sidebar__track {
+      display: none;
+    }
+
+    .upload-sidebar__retry {
+      display: inline-flex;
+    }
+
+    .upload-sidebar__status {
+      color: var(--color-danger);
+    }
+
+    .upload-sidebar__status-failed {
+      display: inline-flex;
+    }
+  }
+
+  &__row[data-state="uploading"] .upload-sidebar__remove {
+    display: none;
+  }
+
+  &__footer {
+    flex: none;
+    padding: 14px 20px 20px;
+    border-top: 0.5px solid var(--color-hairline);
+  }
+}

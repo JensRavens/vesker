@@ -41,6 +41,21 @@ en:
       summary: "%{people} people · %{moments} moments"
       summary_filtered: "%{selected} of %{total} people"
       filter: "Filter by person"
+      add: "Add photos"
+    upload_sidebar:
+      title: "Add to album"
+      cancel: "Cancel"
+      dropzone_title: "Drop photos & videos here"
+      dropzone_subhead: "or tap to choose from your device — add as many as you like"
+      submit: "Add to album"
+      submit_uploading: "Uploading…"
+      submit_count: "Add %{count} to album"
+      retry: "Retry"
+      remove: "Remove file"
+      status:
+        queued: "Queued"
+        done: "Done"
+        failed: "Failed"
     people_picker:
       header: "Show photos from"
       everyone: "Everyone"

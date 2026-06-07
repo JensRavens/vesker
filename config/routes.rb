@@ -11,10 +11,11 @@ Rails.application.routes.draw do
   end
   delete "logout", to: "sessions#destroy"
 
-  resources :albums, only: :show do
+  resources :albums, only: [:show, :new] do
     resources :moments, only: :show do
       resource :like, only: [:create, :destroy]
     end
+    resources :uploads, only: [:new, :create]
     get :people, on: :member
   end
   get "files/:id", to: "shimmer/files#show", as: :file

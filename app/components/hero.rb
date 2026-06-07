@@ -4,10 +4,14 @@ module Components
     prop :users, _Enumerable(User)
     prop :moment_count, Integer
     prop :selected_user_ids, _Enumerable(String), default: -> { [] }
+    prop :current_user, _Nilable(User), default: nil
 
     def view_template
       header(class: "hero") do
-        text(type: "h1", element: :h1) { @album.title }
+        div(class: "hero__top") do
+          text(type: "h1", element: :h1) { @album.title }
+          add_button
+        end
         button(type: "button", class: "hero__people", title: t(".filter"),
           data: {controller: "popover", popover_url_value: people_url, action: "popover#open"}) do
           stack(line: true, gap: 0, align: "center") do
@@ -22,6 +26,17 @@ module Components
     end
 
     private
+
+    # Logged out → opens the login modal; logged in → opens the upload sidebar.
+    def add_button
+      url = @current_user ? new_album_upload_path(@album) : new_session_path
+      size = @current_user ? "sidebar" : ""
+      button(type: "button", class: "hero__add", title: t(".add"),
+        data: {controller: "modal", action: "modal#open", modal_url_value: url, modal_size_value: size}) do
+        icon(name: "add-photo", size: 20)
+        text(type: "caption-bold", element: :span) { t(".add") }
+      end
+    end
 
     def palette
       @palette ||= Palette.new

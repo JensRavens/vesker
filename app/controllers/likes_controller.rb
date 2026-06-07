@@ -25,16 +25,7 @@ class LikesController < ApplicationController
   end
 
   # The liking participant: a user who likes within an album joins it as a contributor.
-  # find_or_create_by! (not create_or_find_by!) because Ownership has a uniqueness
-  # validation that would raise RecordInvalid before the DB constraint is hit; the
-  # rescue covers the rare concurrent first-time join.
   def ownership
-    @ownership ||= album.ownerships.find_or_create_by!(user: current_user)
-  rescue ActiveRecord::RecordNotUnique
-    retry
-  end
-
-  def require_login
-    head :unauthorized unless current_user
+    @ownership ||= album.ownership_for(current_user)
   end
 end

@@ -5,10 +5,12 @@ module Views
       prop :moments, _Enumerable(Moment)
       prop :users, _Enumerable(User)
       prop :selected_user_ids, _Enumerable(String), default: -> { [] }
+      prop :current_user, _Nilable(User), default: nil
 
       def view_template
         render Components::Hero.new(
-          album: @album, users: @users, moment_count: @moments.size, selected_user_ids: @selected_user_ids
+          album: @album, users: @users, moment_count: @moments.size,
+          selected_user_ids: @selected_user_ids, current_user: @current_user
         )
         days.each { |date, moments| render Components::DaySection.new(date:, moments:) }
         render Components::Footer.new
