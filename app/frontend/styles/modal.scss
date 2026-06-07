@@ -99,6 +99,9 @@ body.modal-open .modal-blind {
   align-items: stretch;
   justify-content: flex-end;
   padding: 0;
+  // Fade the container on close rather than letting `.modal`'s opacity snap to 0, so the
+  // panel's slide-out (below) stays visible while Shimmer keeps the node around (~1s).
+  transition: opacity 320ms ease;
 
   .modal__content {
     width: 460px;
@@ -107,7 +110,15 @@ body.modal-open .modal-blind {
     padding: 0;
     border-radius: 0;
     overflow: hidden; // the panel's own body scrolls; chrome (header/footer) stays put
-    animation: modal-slide-right 360ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    // Decelerate to rest with no overshoot — a spring curve would pull the panel past
+    // the right edge and briefly reveal the background behind it.
+    animation: modal-slide-right 360ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  // Closing: Shimmer drops `modal--open` (then removes the node a second later), so slide
+  // the panel back out to the edge during that window.
+  &:not(.modal--open) .modal__content {
+    animation: modal-slide-right-out 280ms cubic-bezier(0.4, 0, 1, 1) forwards;
   }
 
   // Shimmer wraps the fragment in .modal__frame; it must carry the full height too,
@@ -123,6 +134,12 @@ body.modal-open .modal-blind {
 
 @keyframes modal-slide-right {
   from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes modal-slide-right-out {
+  to {
     transform: translateX(100%);
   }
 }
