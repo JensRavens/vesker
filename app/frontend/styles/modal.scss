@@ -163,4 +163,24 @@ body.modal-open .modal-blind {
       transform: translateY(100%);
     }
   }
+
+  @keyframes modal-slide-out {
+    to {
+      transform: translateY(100%);
+    }
+  }
+
+  // The sidebar (upload panel) is a full-screen sheet on mobile: enter from the bottom,
+  // leave to the bottom — not the right-edge drawer it is on desktop.
+  .modal--sidebar .modal__content {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    border-radius: 0;
+    animation: modal-slide 360ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .modal--sidebar:not(.modal--open) .modal__content {
+    animation: modal-slide-out 280ms cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
 }
