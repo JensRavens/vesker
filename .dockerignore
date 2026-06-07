@@ -35,6 +35,14 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /public/assets
+/public/vite
+
+# Ignore the Vite dev cache and Playwright CLI artifacts.
+/.playwright-cli
+/test/fixtures/files/screenshots
+
+# Ignore the local design handoff archive (not part of the app).
+/Mantel-handoff.zip
 
 # Ignore CI service files.
 /.github

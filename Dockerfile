@@ -8,15 +8,16 @@
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=3.4.4
+ARG RUBY_VERSION=4.0.1
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
 # Rails app lives here
 WORKDIR /rails
 
-# Install base packages
+# Install base packages. libvips handles image variants + HEIC EXIF (built with libheif);
+# ffmpeg (ffprobe) provides video duration, poster frames, and capture-time extraction.
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
+    apt-get install --no-install-recommends -y curl ffmpeg libjemalloc2 libvips sqlite3 && \
     ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
@@ -24,21 +25,24 @@ RUN apt-get update -qq && \
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development" \
+    BUNDLE_WITHOUT="development:test" \
     LD_PRELOAD="/usr/local/lib/libjemalloc.so"
 
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
-# Install packages needed to build gems and node modules
+# Install packages needed to build gems and node modules (xz-utils unpacks the Node tarball)
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libvips libyaml-dev pkg-config unzip && \
+    apt-get install --no-install-recommends -y build-essential git libvips libyaml-dev pkg-config unzip xz-utils && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-ENV BUN_INSTALL=/usr/local/bun
-ENV PATH=/usr/local/bun/bin:$PATH
-ARG BUN_VERSION=1.2.18
-RUN curl -fsSL https://bun.sh/install | bash -s -- "bun-v${BUN_VERSION}"
+# Install Node.js for the Vite asset build (matches .node-version / the dev toolchain — npm, not bun)
+ENV PATH=/usr/local/node/bin:$PATH
+ARG NODE_VERSION=24.15.0
+RUN mkdir -p /usr/local/node && \
+    ARCH="$(dpkg --print-architecture | sed 's/amd64/x64/')" && \
+    curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" | \
+    tar -xJ -C /usr/local/node --strip-components=1
 
 # Install application gems
 COPY vendor/* ./vendor/
@@ -50,8 +54,8 @@ RUN bundle install && \
     bundle exec bootsnap precompile -j 1 --gemfile
 
 # Install node modules
-COPY package.json bun.lock* ./
-RUN bun install --frozen-lockfile
+COPY package.json package-lock.json ./
+RUN npm ci
 
 # Copy application code
 COPY . .
