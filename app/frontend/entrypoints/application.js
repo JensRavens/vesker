@@ -4,11 +4,13 @@ import { start } from "@nerdgeschoss/shimmer";
 import PopoverController from "../controllers/popover_controller";
 import ModalController from "../controllers/modal_controller";
 import UploadController from "../controllers/upload_controller";
+import ClipboardController from "../controllers/clipboard_controller";
 
 const application = Application.start();
 application.register("popover", PopoverController);
 application.register("modal", ModalController);
 application.register("upload", UploadController);
+application.register("clipboard", ClipboardController);
 start({ application });
 
 // Close any open popover/modal before navigating, so a lingering click-outside

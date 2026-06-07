@@ -17,6 +17,9 @@ Rails.application.routes.draw do
     end
     resources :uploads, only: [:new, :create]
     get :people, on: :member
+    get :menu, on: :member
+    get :share, on: :member
+    get :download, on: :member
   end
   get "files/:id", to: "shimmer/files#show", as: :file
 

@@ -21,6 +21,8 @@ gem "literal"
 gem "positioning"
 gem "exifr"
 gem "activestorage-after_analyze_attached"
+gem "rqrcode"
+gem "zip_kit"
 gem "bootsnap", require: false
 gem "tzinfo-data", platforms: [:windows, :jruby]
 

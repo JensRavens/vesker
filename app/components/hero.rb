@@ -10,7 +10,10 @@ module Components
       header(class: "hero") do
         div(class: "hero__top") do
           text(type: "h1", element: :h1) { @album.title }
-          add_button
+          div(class: "hero__actions") do
+            menu_button
+            add_button
+          end
         end
         button(type: "button", class: "hero__people", title: t(".filter"),
           data: {controller: "popover", popover_url_value: people_url, action: "popover#open"}) do
@@ -26,6 +29,14 @@ module Components
     end
 
     private
+
+    # The ⋯ overflow menu: share + downloads (its rows are gated on login server-side).
+    def menu_button
+      button(type: "button", class: "hero__menu", title: t(".menu"),
+        data: {controller: "popover", popover_url_value: menu_album_path(@album), action: "popover#open"}) do
+        icon(name: "more-horiz", size: 22)
+      end
+    end
 
     # Logged out → opens the login modal; logged in → opens the upload sidebar.
     def add_button

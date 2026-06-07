@@ -12,6 +12,8 @@ export default class extends Controller {
     // handler would catch this same event and close the modal immediately.
     event.preventDefault();
     event.stopPropagation();
+    // Dismiss any open popover (e.g. the album menu the trigger lives in).
+    window.ui.popover?.close();
     window.ui.modal.open({ url: this.urlValue, size: this.sizeValue });
   }
 

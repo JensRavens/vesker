@@ -1,0 +1,29 @@
+.album-menu {
+  width: 270px;
+  padding: 6px;
+
+  &__row {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 13px;
+    border: 0;
+    border-radius: 12px;
+    background: none;
+    text-align: left;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--color-surface-sunk);
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+}

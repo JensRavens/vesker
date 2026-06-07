@@ -17,6 +17,34 @@
     gap: 18px;
   }
 
+  &__actions {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__menu {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-top: 4px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(58, 38, 24, 0.08);
+    transition: background 150ms ease;
+
+    &:hover {
+      background: var(--color-surface-sunk);
+    }
+  }
+
   &__add {
     flex: none;
     display: inline-flex;

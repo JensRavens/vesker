@@ -54,4 +54,25 @@
   &--error {
     mask-image: url("./icons/error.svg");
   }
+  &--more-horiz {
+    mask-image: url("./icons/more-horiz.svg");
+  }
+  &--share {
+    mask-image: url("./icons/share.svg");
+  }
+  &--photo-library {
+    mask-image: url("./icons/photo-library.svg");
+  }
+  &--filter-none {
+    mask-image: url("./icons/filter-none.svg");
+  }
+  &--content-copy {
+    mask-image: url("./icons/content-copy.svg");
+  }
+  &--check {
+    mask-image: url("./icons/check.svg");
+  }
+  &--info {
+    mask-image: url("./icons/info.svg");
+  }
 }
