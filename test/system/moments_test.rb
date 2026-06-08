@@ -12,6 +12,21 @@ class MomentsTest < ApplicationSystemTestCase
     end
   end
 
+  describe "browsing between moments" do
+    it "steps to the next moment, hiding the back arrow at the start" do
+      album = albums.lisbon
+      first, second = album.moments.chronologic.first(2)
+
+      visit album_moment_path(album, first)
+      expect(page).to have_no_link("Previous moment")
+
+      click_link "Next moment"
+
+      expect(page).to have_current_path(album_moment_path(album, second))
+      expect(page).to have_link("Previous moment")
+    end
+  end
+
   describe "deleting a moment" do
     it "hides the trashcan from anonymous visitors" do
       visit album_moment_path(albums.lisbon, photos.rooftop)

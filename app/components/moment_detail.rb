@@ -6,6 +6,8 @@ module Components
     prop :moment, Moment
     prop :comments, _Enumerable(::Comment)
     prop :liked, _Boolean, default: false
+    prop :previous_moment, _Nilable(Moment), default: nil
+    prop :next_moment, _Nilable(Moment), default: nil
 
     def view_template
       div(class: "moment-detail") do
@@ -21,12 +23,24 @@ module Components
         a(href: album_path(@album), class: "moment-detail__close", aria_label: t(".close")) do
           icon(name: "close", size: 20)
         end
+        nav_arrow(:previous, @previous_moment, "chevron-left")
+        nav_arrow(:next, @next_moment, "chevron-right")
         if @moment.is_a?(Video)
           player
         elsif @moment.file.attached?
           image_tag(@moment.file, width: 1200, alt: "", class: "moment-detail__image",
             style: "view-transition-name: moment-#{@moment.id}")
         end
+      end
+    end
+
+    # Step to the adjacent moment (the grid's chronologic order). Hidden at the ends.
+    def nav_arrow(direction, moment, icon_name)
+      return unless moment
+
+      a(href: album_moment_path(@album, moment),
+        class: "moment-detail__nav moment-detail__nav--#{direction}", aria_label: t(".#{direction}")) do
+        icon(name: icon_name, size: 28)
       end
     end
 

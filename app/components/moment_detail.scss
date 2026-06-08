@@ -42,6 +42,36 @@
     backdrop-filter: blur(6px);
   }
 
+  // Prev/next arrows, pinned to the middle of the media stage.
+  &__nav {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    color: var(--color-text-inverse);
+    background: rgba(0, 0, 0, 0.38);
+    backdrop-filter: blur(8px);
+    transition: background 150ms ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.55);
+    }
+
+    &--previous {
+      left: 16px;
+    }
+
+    &--next {
+      right: 16px;
+    }
+  }
+
   &__sidebar {
     flex: 1 1 auto;
     min-height: 0;

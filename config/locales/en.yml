@@ -96,6 +96,8 @@ en:
       message: "That's the trip so far ✦"
     moment_detail:
       close: "Back to album"
+      previous: "Previous moment"
+      next: "Next moment"
       download: "Download original"
       like: "Like"
       unlike: "Remove like"
