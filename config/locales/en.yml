@@ -100,6 +100,9 @@ en:
       like: "Like"
       unlike: "Remove like"
       delete: "Delete"
+      comment_placeholder: "Add a comment…"
+      send: "Post comment"
+      no_comments: "No comments yet — say something."
     not_found:
       brand: "Vesker"
       title: "This album link isn’t valid"

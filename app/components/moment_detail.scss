@@ -137,6 +137,59 @@
     }
   }
 
+  &__composer {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  &__composer-field {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 40px;
+    box-sizing: border-box;
+    border: 0;
+    outline: none;
+    background: var(--color-surface-sunk);
+    color: var(--color-text);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  &__send {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--color-text-inverse);
+    background: var(--color-accent);
+    transition: background 150ms ease;
+
+    &:hover {
+      background: var(--color-accent-pressed);
+    }
+  }
+
+  // Empty required field (the logged-in composer) → the send control reads as inactive.
+  // The logged-out composer's field has no `required`, so its button stays clickable
+  // (it opens the login modal).
+  &__composer:has(&__composer-field:required:placeholder-shown) &__send {
+    cursor: default;
+    background: var(--color-surface-sunk);
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
   &__comments {
     display: flex;
     flex-direction: column;

@@ -39,4 +39,39 @@ class MomentsTest < ApplicationSystemTestCase
       expect(Moment.exists?(moment.id)).to eq(false)
     end
   end
+
+  describe "commenting" do
+    it "shows an empty state on a moment with no comments yet" do
+      visit album_moment_path(albums.lisbon, photos.tiles)
+
+      expect(page).to have_content("No comments yet")
+    end
+
+    it "prompts anonymous visitors to log in when they try to comment" do
+      visit album_moment_path(albums.lisbon, photos.rooftop)
+
+      fill_in "comment[body]", with: "let me in"
+      click_button "Post comment"
+
+      within ".modal__frame" do
+        expect(page).to have_text("Add your name to the album")
+      end
+    end
+
+    it "lets a logged-in visitor post a comment that lands newest-first" do
+      album = albums.lisbon
+      moment = photos.tram # already has Lena's "this is SO lisbon"
+
+      login users.nomad
+      visit album_moment_path(album, moment)
+
+      fill_in "comment[body]", with: "joining the trip"
+      click_button "Post comment"
+
+      # Newest first: the just-posted comment is the first row in the list, and the
+      # body is stored verbatim (not the wrapping params hash).
+      expect(find(".moment-detail__comments .comment", match: :first)).to have_text("joining the trip")
+      expect(moment.comments.order(created_at: :desc).first.body).to eq("joining the trip")
+    end
+  end
 end

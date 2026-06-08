@@ -44,6 +44,7 @@ module Components
       aside(class: "moment-detail__sidebar") do
         header
         action_bar
+        comment_composer
         comment_list
       end
     end
@@ -127,9 +128,51 @@ module Components
       end
     end
 
+    # Logged in → a real form posts the comment. Logged out → the send button opens
+    # the login modal in the current view (the heart does the same).
+    def comment_composer
+      if @current_user
+        composer_form
+      else
+        div(class: "moment-detail__composer") do
+          composer_field
+          send_button(data: {controller: "modal", action: "modal#open", modal_url_value: new_session_path})
+        end
+      end
+    end
+
+    def composer_form
+      form_with(url: album_moment_comments_path(@album, @moment), class: "moment-detail__composer") do
+        composer_field(required: true)
+        send_button(type: "submit")
+      end
+    end
+
+    # A single-line input submits on Enter for free; `required` + a non-whitespace
+    # `pattern` let the browser reject an empty/blank comment without any JS, so the
+    # send button's disabled state (see SCSS) is purely cosmetic.
+    def composer_field(required: false)
+      input(
+        type: "text", name: "comment[body]", required:,
+        pattern: (".*\\S.*" if required), autocomplete: "off",
+        class: "moment-detail__composer-field",
+        placeholder: t(".comment_placeholder"), aria_label: t(".comment_placeholder")
+      )
+    end
+
+    def send_button(type: "button", data: {})
+      button(type:, class: "moment-detail__send", aria_label: t(".send"), data:) do
+        icon(name: "arrow-upward", size: 20)
+      end
+    end
+
     def comment_list
       div(class: "moment-detail__comments") do
-        @comments.each { |comment| render Comment.new(comment:) }
+        if @comments.empty?
+          text(type: "caption", element: :p, color: "muted") { t(".no_comments") }
+        else
+          @comments.each { |comment| render Comment.new(comment:) }
+        end
       end
     end
   end

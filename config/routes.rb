@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   resources :albums, only: [:show, :new, :update] do
     resources :moments, only: [:show, :destroy] do
       resource :like, only: [:create, :destroy]
+      resources :comments, only: [:create]
       get :confirm_delete, on: :member
     end
     resources :uploads, only: [:new, :create]
