@@ -1,5 +1,5 @@
 class MomentsController < ApplicationController
-  before_action :require_login, only: [:confirm_delete, :destroy]
+  before_action :require_login, only: :destroy
 
   def show
     @album = Album.find_by!(slug: params[:album_id])
@@ -11,15 +11,6 @@ class MomentsController < ApplicationController
       album: @album, moment: @moment, comments: @comments, liked: @liked,
       previous_moment: neighbour(:before), next_moment: neighbour(:after)
     )
-  end
-
-  # The confirm-delete modal (lazy-loaded into the Shimmer modal).
-  def confirm_delete
-    @album = Album.find_by!(slug: params[:album_id])
-    @moment = @album.moments.find(params[:id])
-    authorize @moment, :destroy?
-
-    render Views::Moments::ConfirmDelete.new(album: @album, moment: @moment), layout: false
   end
 
   def destroy

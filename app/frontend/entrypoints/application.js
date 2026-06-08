@@ -1,4 +1,4 @@
-import "@hotwired/turbo-rails";
+import { Turbo } from "@hotwired/turbo-rails";
 import { Application } from "@hotwired/stimulus";
 import { start } from "@nerdgeschoss/shimmer";
 import PopoverController from "../controllers/popover_controller";
@@ -12,6 +12,19 @@ application.register("modal", ModalController);
 application.register("upload", UploadController);
 application.register("clipboard", ClipboardController);
 start({ application });
+
+// Back Turbo's confirm (data-turbo-confirm) with the design's styled <dialog>
+// (Components::ConfirmDialog in the layout) instead of the native browser confirm.
+// Swap in the action's message; resolve true only when the Delete button submits.
+Turbo.setConfirmMethod((message) => {
+  const dialog = document.getElementById("confirm-dialog");
+  const messageEl = dialog.querySelector(".modal-card__subhead p");
+  if (messageEl && message) messageEl.textContent = message;
+  dialog.showModal();
+  return new Promise((resolve) => {
+    dialog.addEventListener("close", () => resolve(dialog.returnValue === "confirm"), { once: true });
+  });
+});
 
 // Close any open popover/modal before navigating, so a lingering click-outside
 // listener doesn't swallow the first click on the next page.

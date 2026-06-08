@@ -1,0 +1,39 @@
+// The card chrome mirrors the Shimmer modal frame (modal.scss .modal__content), so a
+// Turbo confirm looks identical to the app's other modals. Centering comes from the
+// native <dialog> (showModal puts it in the top layer, centered by the UA).
+.confirm-dialog {
+  // The global `* { margin: 0 }` reset clobbers the <dialog> UA's `margin: auto`,
+  // which is what centres a modal dialog within its inset:0 box — restore it.
+  margin: auto;
+  width: calc(100% - 40px);
+  max-width: 400px;
+  box-sizing: border-box;
+  padding: 24px;
+  border: 0;
+  background: var(--color-surface);
+  border-radius: 24px;
+  box-shadow:
+    0 8px 24px rgba(58, 38, 24, 0.1),
+    0 18px 48px rgba(58, 38, 24, 0.14);
+
+  &::backdrop {
+    background: rgba(26, 22, 17, 0.45);
+  }
+
+  &[open] {
+    animation: confirm-dialog-pop 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+}
+
+@keyframes confirm-dialog-pop {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+}

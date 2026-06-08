@@ -151,6 +151,11 @@
     }
   }
 
+  // The delete control reuses &__stat-style layout but is a form submit.
+  &__delete-form {
+    display: contents;
+  }
+
   &__delete {
     display: inline-flex;
     align-items: center;

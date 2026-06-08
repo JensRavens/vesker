@@ -15,7 +15,6 @@ Rails.application.routes.draw do
     resources :moments, only: [:show, :destroy] do
       resource :like, only: [:create, :destroy]
       resources :comments, only: [:create]
-      get :confirm_delete, on: :member
     end
     resources :uploads, only: [:new, :create]
     get :people, on: :member

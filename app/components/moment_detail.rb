@@ -129,14 +129,13 @@ module Components
       end
     end
 
-    # Opens the confirm-delete modal (the actual DELETE is submitted from there).
+    # Turbo shows a native confirm before submitting the DELETE (data-turbo-confirm).
     def delete_button
-      button(
-        type: "button", class: "moment-detail__delete", aria_label: t(".delete"),
-        data: {controller: "modal", action: "modal#open",
-               modal_url_value: confirm_delete_album_moment_path(@album, @moment)}
-      ) do
-        icon(name: "delete", size: 23)
+      form_with(url: album_moment_path(@album, @moment), method: :delete,
+        class: "moment-detail__delete-form", data: {turbo_confirm: t(".delete_confirm")}) do
+        button(type: "submit", class: "moment-detail__delete", aria_label: t(".delete")) do
+          icon(name: "delete", size: 23)
+        end
       end
     end
 

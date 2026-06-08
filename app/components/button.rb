@@ -8,14 +8,16 @@ module Components
     prop :href, _Nilable(String), default: nil
     prop :data, _Nilable(_Hash(Symbol, String)), default: nil
     prop :disabled, _Boolean, default: false
+    prop :value, _Nilable(String), default: nil
 
     # A link when `href:` is given, otherwise a button. `data:` carries any Stimulus
-    # bindings (e.g. the modal-close action on a ghost dismiss button).
+    # bindings (e.g. the modal-close action on a ghost dismiss button); `value:` lets a
+    # dialog-form submit report which button was pressed.
     def view_template(&)
       if @href
         a(href: @href, class: css, &)
       else
-        button(type: @type, class: css, data: @data, disabled: @disabled, &)
+        button(type: @type, class: css, data: @data, disabled: @disabled, value: @value, &)
       end
     end
 

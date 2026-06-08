@@ -34,16 +34,16 @@ class MomentsTest < ApplicationSystemTestCase
       expect(page).to have_no_css("button[aria-label='Delete']")
     end
 
-    it "lets the uploader delete it via the confirm modal, returning to the grid" do
+    it "lets the uploader delete it after confirming, returning to the grid" do
       album = albums.lisbon
       moment = photos.rooftop # uploaded by Priya
 
       login users.priya
       visit album_moment_path(album, moment)
 
-      # The trashcan shows; opening it asks to confirm before deleting.
+      # The trashcan shows; Turbo's confirm (our styled dialog) asks before deleting.
       find("button[aria-label='Delete']").click
-      within ".modal__frame" do
+      within "#confirm-dialog" do
         expect(page).to have_text("Delete this item?")
         click_button "Delete"
       end
