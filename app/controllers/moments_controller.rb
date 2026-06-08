@@ -8,8 +8,7 @@ class MomentsController < ApplicationController
     @liked = current_user.present? && @moment.likes.joins(:ownership).exists?(ownerships: {user_id: current_user.id})
 
     render Views::Moments::Show.new(
-      album: @album, moment: @moment, comments: @comments,
-      current_user:, liked: @liked, can_delete: policy(@moment).destroy?
+      album: @album, moment: @moment, comments: @comments, liked: @liked
     )
   end
 

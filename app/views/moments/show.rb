@@ -4,14 +4,11 @@ module Views
       prop :album, Album
       prop :moment, Moment
       prop :comments, _Enumerable(::Comment)
-      prop :current_user, _Nilable(User), default: nil
       prop :liked, _Boolean, default: false
-      prop :can_delete, _Boolean, default: false
 
       def view_template
         render Components::MomentDetail.new(
-          album: @album, moment: @moment, comments: @comments,
-          current_user: @current_user, liked: @liked, can_delete: @can_delete
+          album: @album, moment: @moment, comments: @comments, liked: @liked
         )
       end
     end

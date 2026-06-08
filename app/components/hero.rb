@@ -4,7 +4,6 @@ module Components
     prop :users, _Enumerable(User)
     prop :moment_count, Integer
     prop :selected_user_ids, _Enumerable(String), default: -> { [] }
-    prop :current_user, _Nilable(User), default: nil
 
     def view_template
       header(class: "hero") do
@@ -40,8 +39,8 @@ module Components
 
     # Logged out → opens the login modal; logged in → opens the upload sidebar.
     def add_button
-      url = @current_user ? new_album_upload_path(@album) : new_session_path
-      size = @current_user ? "sidebar" : ""
+      url = current_user ? new_album_upload_path(@album) : new_session_path
+      size = current_user ? "sidebar" : ""
       button(type: "button", class: "hero__add", title: t(".add"),
         data: {controller: "modal", action: "modal#open", modal_url_value: url, modal_size_value: size}) do
         icon(name: "add-photo", size: 20)

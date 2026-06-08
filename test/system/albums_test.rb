@@ -35,17 +35,17 @@ class AlbumsTest < ApplicationSystemTestCase
       end
     end
 
-    it "creates an album for a logged-in visitor and opens it" do
-      login users.priya
+    it "creates an album for a logged-in admin and opens it" do
+      login users.marco # Marco is a site admin
       visit root_path
 
       click_link "Create an album"
 
-      # Lands on the freshly-created album, owned by the visitor.
+      # Lands on the freshly-created album, owned by the admin.
       expect(page).to have_current_path(%r{\A/albums/})
       album = Album.order(:created_at).last
       expect(page).to have_current_path(album_path(album))
-      expect(album.creator).to eq(users.priya)
+      expect(album.creator).to eq(users.marco)
     end
   end
 

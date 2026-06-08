@@ -5,9 +5,7 @@ module Components
     prop :album, Album
     prop :moment, Moment
     prop :comments, _Enumerable(::Comment)
-    prop :current_user, _Nilable(User), default: nil
     prop :liked, _Boolean, default: false
-    prop :can_delete, _Boolean, default: false
 
     def view_template
       div(class: "moment-detail") do
@@ -64,14 +62,14 @@ module Components
         like_button
         stat("comment-outline", @moment.comments_count, size: 22)
         download_button
-        delete_button if @can_delete
+        delete_button if policy(@moment).destroy?
       end
     end
 
     # Logged out → the heart opens the login modal. Logged in → it toggles a like
     # (the page morphs into the liked/unliked version on redirect).
     def like_button
-      if @current_user
+      if current_user
         like_form
       else
         button(
@@ -131,7 +129,7 @@ module Components
     # Logged in → a real form posts the comment. Logged out → the send button opens
     # the login modal in the current view (the heart does the same).
     def comment_composer
-      if @current_user
+      if current_user
         composer_form
       else
         div(class: "moment-detail__composer") do

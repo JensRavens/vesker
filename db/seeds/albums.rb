@@ -21,7 +21,7 @@ album = albums.create(:lisbon, title: "Lisbon & the Algarve", slug: "test")
 # Ownerships: created creator-first; the positioning gem assigns `position` in creation order,
 # and a user's index in that order maps to their palette color (first = ember).
 priya = ownerships.create(:priya, album:, role: :creator, user: users.create(:priya, unique_by: :email, name: "Priya", email: "priya@example.com"))
-marco = ownerships.create(:marco, album:, role: :admin, user: users.create(:marco, unique_by: :email, name: "Marco", email: "marco@example.com"))
+marco = ownerships.create(:marco, album:, user: users.create(:marco, unique_by: :email, name: "Marco", email: "marco@example.com", roles: ["admin"]))
 lena = ownerships.create(:lena, album:, user: users.create(:lena, unique_by: :email, name: "Lena", email: "lena@example.com"))
 jonas = ownerships.create(:jonas, album:, user: users.create(:jonas, unique_by: :email, name: "Jonas", email: "jonas@example.com"))
 ada = ownerships.create(:ada, album:, user: users.create(:ada, unique_by: :email, name: "Ada", email: "ada@example.com"))

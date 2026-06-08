@@ -19,7 +19,7 @@ class Ownership < ApplicationRecord
   has_many :comments, foreign_key: :author_id, inverse_of: :author, dependent: :destroy
   has_many :likes, dependent: :destroy
 
-  enum :role, {contributor: 0, admin: 1, creator: 2}, default: :contributor
+  enum :role, {contributor: 0, creator: 1}, default: :contributor
 
   # Per-album order (the palette slot): a user's index in this list maps to their color.
   positioned on: :album

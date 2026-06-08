@@ -1,15 +1,13 @@
 module Components
   class AlbumMenu < Base
     prop :album, Album
-    prop :current_user, _Nilable(User), default: nil
-    prop :can_rename, _Boolean, default: false
 
     def view_template
       div(class: "album-menu") do
-        rename_row if @can_rename
+        rename_row if policy(@album).update?
         share_row
         download_row(t(".download_all"), t(".download_all_sub"), "photo-library", download_album_path(@album))
-        if @current_user
+        if current_user
           download_row(t(".download_others"), t(".download_others_sub"), "filter-none",
             download_album_path(@album, scope: :others))
         end

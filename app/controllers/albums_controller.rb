@@ -6,10 +6,12 @@ class AlbumsController < ApplicationController
 
   # The site root: a landing page prompting the visitor to create an album.
   def index
-    render Views::Albums::Index.new(current_user:)
+    render Views::Albums::Index.new
   end
 
   def new
+    authorize Album, :create?
+
     album = Album.transaction do
       album = Album.create!
       album.ownerships.create!(user: current_user, role: :creator)
@@ -30,7 +32,7 @@ class AlbumsController < ApplicationController
 
     render Views::Albums::Show.new(
       album: @album, moments: @moments, users: @users,
-      selected_user_ids: @selected_user_ids, current_user:
+      selected_user_ids: @selected_user_ids
     )
   end
 
@@ -43,11 +45,11 @@ class AlbumsController < ApplicationController
     render Components::PeoplePicker.new(album: @album, users: @users, selected_user_ids: @selected_user_ids), layout: false
   end
 
-  # Overflow-menu popover content (share + downloads). The "except mine" row is gated on login;
-  # the rename row is gated on being the album's creator.
+  # Overflow-menu popover content (share + downloads). The component gates its rows itself
+  # (the "except mine" row on login, the rename row on AlbumPolicy#update?).
   def menu
     @album = Album.find_by!(slug: params[:id])
-    render Components::AlbumMenu.new(album: @album, current_user:, can_rename: policy(@album).update?), layout: false
+    render Components::AlbumMenu.new(album: @album), layout: false
   end
 
   # The rename modal (lazy-loaded into the Shimmer modal), creator only.
