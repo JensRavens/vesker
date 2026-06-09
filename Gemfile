@@ -13,7 +13,7 @@ gem "solid_cable"
 # Extensions
 gem "turbo-rails"
 gem "stimulus-rails"
-gem "image_processing", "~> 2.0"
+gem "image_processing"
 gem "ruby-vips"
 gem "shimmer"
 gem "phlex-rails"
