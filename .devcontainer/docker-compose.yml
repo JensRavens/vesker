@@ -7,6 +7,7 @@ services:
       - ~/.ssh:/root/.ssh
       - ~/.config/gh:/root/.config/gh
       - ~/.cache/devcontainer/playwright:/root/.cache/devcontainer/playwright
+      - /var/run/docker.sock:/var/run/docker.sock
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity

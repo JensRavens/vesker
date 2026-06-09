@@ -13,13 +13,14 @@
         "Shopify.ruby-lsp",
         "EditorConfig.EditorConfig",
         "eamodio.gitlens",
-        "GraphQL.vscode-graphql"
+        "GraphQL.vscode-graphql",
+        "Anthropic.claude-code"
       ],
       "settings": {
         "typescript.tsdk": "node_modules/typescript/lib",
         "rubyLsp.rubyVersionManager": {
-           "identifier": "rvm"
-         },
+          "identifier": "rvm"
+        },
         "[ruby]": {
           "editor.formatOnSave": true,
           "editor.defaultFormatter": "Shopify.ruby-lsp"
@@ -30,9 +31,7 @@
   "features": {
     "ghcr.io/devcontainers/features/desktop-lite:1": {}
   },
-  "forwardPorts": [
-    6080
-  ],
+  "forwardPorts": [6080],
   "portsAttributes": {
     "6080": {
       "label": "playwright"
