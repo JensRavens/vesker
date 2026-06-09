@@ -29,6 +29,18 @@ class ApplicationController < ActionController::Base
     head :unauthorized unless current_user
   end
 
+  # The page to morph back to after a modal action — the referer, but only if it's same-origin
+  # (the `Referer` header is attacker-influenceable, so never navigate to an external host).
+  def safe_referer
+    referer = request.referer
+    return root_path if referer.blank?
+
+    host = URI.parse(referer).host
+    (host.blank? || host == request.host) ? referer : root_path
+  rescue URI::InvalidURIError
+    root_path
+  end
+
   private
 
   # Resolves the logged-in user (from the encrypted cookie) into the per-request Current.

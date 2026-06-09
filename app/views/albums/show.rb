@@ -7,6 +7,12 @@ module Views
       prop :selected_user_ids, _Enumerable(String), default: -> { [] }
 
       def view_template
+        page_meta(
+          title: @album.title,
+          description: t(".meta_description", moments: @moments.size, people: @users.size),
+          image: cover_file
+        )
+
         render Components::Hero.new(
           album: @album, users: @users, moment_count: @moments.size,
           selected_user_ids: @selected_user_ids
@@ -19,6 +25,11 @@ module Views
 
       def days
         @moments.group_by { |moment| moment.captured_at.to_date }
+      end
+
+      # First photo as the social-preview image (videos can't be proxied to a still here).
+      def cover_file
+        @cover_file ||= @moments.find { |moment| moment.is_a?(Photo) }&.file
       end
     end
   end

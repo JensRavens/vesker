@@ -1,6 +1,6 @@
 # Base Pundit policy. Predicates default to false; subclasses open up the actions
-# they allow. Authorization is enforced in controllers via `authorize`, and views
-# receive the resolved booleans as props (Phlex components have no Pundit helpers).
+# they allow. Authorization is enforced in controllers via `authorize`; Phlex
+# components carry Pundit themselves and call `policy(record).action?` directly.
 class ApplicationPolicy
   attr_reader :user, :record
 

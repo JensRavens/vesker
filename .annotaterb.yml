@@ -48,7 +48,7 @@
 - updated_at
 :ignore_columns:
 :ignore_routes:
-:ignore_multi_database_name: false
+:ignore_multi_database_name: true
 :models: true
 :routes: false
 :skip_on_db_migrate: false

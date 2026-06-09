@@ -12,7 +12,7 @@ class CreateMoments < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :moments, [:album_id, :captured_at]                 # the chronologic timeline query
+    add_index :moments, [:album_id, :captured_at, :id]            # the chronologic timeline + keyset prev/next
     add_index :moments, :type
   end
 end

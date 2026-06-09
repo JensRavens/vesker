@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+# A single HOST var drives both Rails (host/mailer/WebAuthn) and Thruster's TLS cert binding.
+export TLS_DOMAIN="${TLS_DOMAIN:-$HOST}"
+
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare

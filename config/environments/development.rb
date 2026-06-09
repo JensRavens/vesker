@@ -21,12 +21,15 @@ Rails.application.configure do
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
     config.public_file_server.headers = {"cache-control" => "public, max-age=#{2.days.to_i}"}
+    config.cache_store = :solid_cache_store
   else
     config.action_controller.perform_caching = false
+    config.cache_store = :null_store
   end
 
-  # Change to :null_store to avoid any caching.
-  config.cache_store = :memory_store
+  # Run jobs through Solid Queue (Puma boots the worker, see config/puma.rb).
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = {database: {writing: :queue}}
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local

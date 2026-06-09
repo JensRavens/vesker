@@ -28,9 +28,8 @@ Rails.application.routes.draw do
   end
   get "files/:id", to: "shimmer/files#show", as: :file
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  # Web app manifest (rendered from app/views/pwa/manifest.json.erb), linked in the layout head.
+  get "manifest", to: "rails/pwa#manifest", as: :pwa_manifest
 
   # The landing page that prompts visitors to create an album (the only way in besides a shared link).
   root "albums#index"

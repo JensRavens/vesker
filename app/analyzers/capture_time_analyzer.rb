@@ -29,7 +29,9 @@ class CaptureTimeAnalyzer < ActiveStorage::Analyzer
 
   def captured_at
     blob.video? ? video_captured_at : image_captured_at
-  rescue
+  rescue => e
+    # A file with no readable capture time keeps the CURRENT_TIMESTAMP default — never fail an upload.
+    logger.warn { "CaptureTimeAnalyzer could not read capture time for blob #{blob.id}: #{e.class}: #{e.message}" }
     nil
   end
 

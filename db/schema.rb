@@ -54,7 +54,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_120000) do
     t.string "moment_id", null: false
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_comments_on_author_id"
-    t.index ["moment_id"], name: "index_comments_on_moment_id"
+    t.index ["moment_id", "created_at"], name: "index_comments_on_moment_id_and_created_at"
   end
 
   create_table "likes", id: :string, force: :cascade do |t|
@@ -75,7 +75,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_120000) do
     t.string "type", null: false
     t.datetime "updated_at", null: false
     t.string "uploader_id", null: false
-    t.index ["album_id", "captured_at"], name: "index_moments_on_album_id_and_captured_at"
+    t.index ["album_id", "captured_at", "id"], name: "index_moments_on_album_id_and_captured_at_and_id"
     t.index ["type"], name: "index_moments_on_type"
     t.index ["uploader_id"], name: "index_moments_on_uploader_id"
   end

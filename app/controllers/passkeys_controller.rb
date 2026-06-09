@@ -9,7 +9,7 @@ class PasskeysController < ApplicationController
   # + morph the host page (mirrors the email verify success path).
   def create
     if login.passkey.register(credential_param)
-      ui.navigate_to(request.referer)
+      ui.navigate_to(safe_referer)
     else
       render Views::Sessions::Passkey.new(
         passkey_options: login.passkey.registration_options.as_json,

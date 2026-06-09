@@ -9,6 +9,8 @@ module Views
       prop :next_moment, _Nilable(Moment), default: nil
 
       def view_template
+        page_meta(title: @album.title, image: @moment.file)
+
         render Components::MomentDetail.new(
           album: @album, moment: @moment, comments: @comments, liked: @liked,
           previous_moment: @previous_moment, next_moment: @next_moment

@@ -13,7 +13,6 @@ gem "solid_cable"
 # Extensions
 gem "turbo-rails"
 gem "stimulus-rails"
-gem "jbuilder"
 gem "image_processing", "~> 1.2"
 gem "shimmer"
 gem "phlex-rails"
@@ -33,7 +32,6 @@ gem "propshaft"
 gem "vite_rails"
 
 # Deployment
-gem "kamal", require: false
 gem "thruster", require: false
 
 group :development, :test do

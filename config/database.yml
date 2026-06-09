@@ -9,9 +9,24 @@ default: &default
   max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 
+# Development and production both run Solid Queue/Cache/Cable, so each gets its own
+# primary + cache + queue + cable SQLite database. Test stays single-db.
 development:
-  <<: *default
-  database: storage/development.sqlite3
+  primary:
+    <<: *default
+    database: storage/development.sqlite3
+  cache:
+    <<: *default
+    database: storage/development_cache.sqlite3
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    database: storage/development_queue.sqlite3
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: storage/development_cable.sqlite3
+    migrations_paths: db/cable_migrate
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -20,8 +35,9 @@ test:
   <<: *default
   database: storage/test.sqlite3
 
-# Store production database in the storage/ directory, which by default
-# is mounted as a persistent Docker volume in config/deploy.yml.
+# All SQLite databases live under storage/, which in production must be a persistent
+# Docker volume (`docker run -v vesker-storage:/rails/storage …`) so the data — the
+# databases AND uploaded photos — survives container redeploys.
 production:
   primary:
     <<: *default

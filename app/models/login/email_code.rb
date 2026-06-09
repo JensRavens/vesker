@@ -16,7 +16,7 @@ class Login
       user = find_or_create_user(email)
       code = generate_code
       UserMailer.with(user:, code:).login_code.deliver_later
-      @cookies.encrypted[:pending_login] = {value: {email: user.email, code:}, expires: CODE_TTL, httponly: true}
+      @cookies.encrypted[:pending_login] = {value: {email: user.email, code:}, expires: CODE_TTL, httponly: true, secure: Rails.env.production?, same_site: :lax}
       user
     end
 

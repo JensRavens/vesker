@@ -11,3 +11,8 @@ node_modules
 
 /.playwright
 /.playwright-cli
+/.ruby-lsp
+
+# Secrets — never commit. Production reads SECRET_KEY_BASE from the environment.
+/config/master.key
+/config/credentials.yml.enc

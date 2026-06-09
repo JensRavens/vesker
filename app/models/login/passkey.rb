@@ -58,7 +58,7 @@ class Login
 
     # Persist the challenge in a short-lived cookie and return the options to render.
     def stash_challenge(options)
-      @cookies.encrypted[:webauthn_challenge] = {value: options.challenge, expires: CHALLENGE_TTL, httponly: true}
+      @cookies.encrypted[:webauthn_challenge] = {value: options.challenge, expires: CHALLENGE_TTL, httponly: true, secure: Rails.env.production?, same_site: :lax}
       options
     end
   end

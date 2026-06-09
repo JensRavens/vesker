@@ -129,6 +129,13 @@ en:
         subhead: "Skip the email code next time — sign in with Face ID, a fingerprint, or your device PIN."
         create: "Create a passkey"
         skip: "Not now"
+    albums:
+      index:
+        meta_description: "A shared photo album — create one, send the link, and everyone’s photos land in one timeline."
+      show:
+        meta_description: "%{moments} moments from %{people} people."
+    not_found:
+      meta_title: "Album not found"
   sessions:
     create:
       invalid_passkey: "We couldn’t verify that passkey. Try again or use your email."

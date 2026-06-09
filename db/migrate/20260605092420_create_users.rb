@@ -3,6 +3,7 @@ class CreateUsers < ActiveRecord::Migration[8.1]
     create_table :users, id: :string do |t|
       t.string :email, null: false
       t.string :name, null: false
+      t.json :roles, null: false, default: [] # site-wide capabilities, e.g. ["admin"]
 
       t.timestamps
     end

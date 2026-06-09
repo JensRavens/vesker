@@ -1,8 +1,11 @@
 class SessionsController < ApplicationController
   include Shimmer::RemoteNavigation
 
-  # Basic brute-force protection (per IP): cap code requests and code guesses.
-  rate_limit to: 5, within: 3.minutes, only: :create, name: "session-create"
+  # Basic brute-force / abuse protection: cap code requests (per IP and per email, to curb
+  # email-bombing a single address from many IPs) and cap code guesses per IP.
+  rate_limit to: 5, within: 3.minutes, only: :create, name: "session-create-ip"
+  rate_limit to: 5, within: 3.minutes, only: :create, name: "session-create-email",
+    by: -> { params[:email].to_s.strip.downcase.presence || request.remote_ip }
   rate_limit to: 10, within: 3.minutes, only: :verify, name: "session-verify"
 
   # Step 1: the email form (loaded into the modal). Carries the passkey auth challenge
@@ -17,7 +20,7 @@ class SessionsController < ApplicationController
   def create
     if params[:credential].present?
       if login.passkey.verify(credential_param)
-        ui.navigate_to(request.referer)
+        ui.navigate_to(safe_referer)
       else
         render Views::Sessions::New.new(
           passkey_options: login.passkey.authentication_options.as_json,

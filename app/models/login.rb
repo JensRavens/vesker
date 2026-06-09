@@ -32,7 +32,7 @@ class Login
   # strategies cross. Memoizes so the rest of the request sees the user immediately.
   def sign_in(user)
     @user = user
-    @cookies.encrypted[:user_id] = {value: user.id, expires: LOGIN_TTL, httponly: true}
+    @cookies.encrypted[:user_id] = {value: user.id, expires: LOGIN_TTL, httponly: true, secure: Rails.env.production?, same_site: :lax}
     user
   end
 

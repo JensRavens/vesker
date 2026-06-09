@@ -1,9 +1,14 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
+# This Dockerfile is designed for production, not development. Build and run a single container:
 # docker build -t vesker .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name vesker vesker
+# docker run -d -p 80:80 -p 443:443 -v vesker-storage:/rails/storage \
+#   -e SECRET_KEY_BASE=<random> -e HOST=album.example.com \
+#   -e SMTP_ADDRESS=... -e SMTP_USER_NAME=... -e SMTP_PASSWORD=... \
+#   --name vesker vesker
+# The -v volume keeps the SQLite databases AND uploaded photos across redeploys; HOST drives
+# both the app's host config and Thruster's TLS certificate (see bin/docker-entrypoint).
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
