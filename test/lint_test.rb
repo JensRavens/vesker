@@ -11,4 +11,9 @@ class LintTest < ActiveSupport::TestCase
     output, status = Open3.capture2e("bin/brakeman", "--quiet", "--no-pager", "--exit-on-warn")
     assert status.success?, output
   end
+
+  it "has no vulnerable dependencies" do
+    output, status = Open3.capture2e("bin/bundler-audit", "check")
+    assert status.success?, output
+  end
 end
