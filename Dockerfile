@@ -38,7 +38,7 @@ FROM base AS build
 
 # Install packages needed to build gems and node modules (xz-utils unpacks the Node tarball)
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libvips libyaml-dev pkg-config unzip xz-utils && \
+    apt-get install --no-install-recommends -y build-essential git libssl-dev libvips libyaml-dev pkg-config unzip xz-utils && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install Node.js for the Vite asset build (matches .node-version / the dev toolchain — npm, not bun)
