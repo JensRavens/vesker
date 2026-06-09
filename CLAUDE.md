@@ -121,7 +121,7 @@ JS/assets are bundled with **Vite** (`vite_rails`): entrypoint `app/frontend/ent
 
 ## Gotchas
 
-- **Video posters / duration / capture-time for non-JPEG** need the `ffmpeg` CLI at runtime (now installed here — `apt-get install ffmpeg`; not guaranteed in CI). `libvips` is present as a library (image variants/dimensions work) but the `vips` CLI isn't. Without ffmpeg the video seed still loads, but `Video#duration` and the poster frame come back empty.
+- **Video posters / duration / capture-time for non-JPEG** need the `ffmpeg` CLI at runtime. The dev-container base image doesn't ship it, so **`bin/setup` installs it** (`apt-get install ffmpeg`) — it's there after a container rebuild, but **not guaranteed in CI**. `libvips` is present as a library (image variants/dimensions work) but the `vips` CLI isn't. Without ffmpeg the video seed still loads, but `Video#duration` and the poster frame come back empty.
 - **Custom AS analyzer registration:** amend `config.active_storage.analyzers` inside `config.after_initialize` (`config/initializers/active_storage_analyzers.rb`) — the railtie copies config → `ActiveStorage.analyzers` in *its* after_initialize, so mutating the live array there gets overwritten.
 - After changing a not-yet-committed migration, roll back the later domain migrations (`bin/rails db:rollback STEP=n`), edit, then `db:migrate` — the domain migrations are uncommitted.
 - **Flaky system-test image race:** on a *cold* asset build the first `/files/<id>` request can 500 with `undefined method 'processed' for nil` (shimmer `FileProxy` racing variant generation), failing a system test. It passes on re-run — it's environmental, not a regression. Re-run before investigating.

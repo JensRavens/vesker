@@ -9,6 +9,10 @@ end
 
 FileUtils.chdir APP_ROOT do
   puts "== Installing dependencies =="
+  # ffmpeg (ffprobe) powers video posters, duration, and capture-time extraction.
+  # The dev-container base image doesn't ship it, so install it here.
+  system!("apt-get update -qq && apt-get install -y --no-install-recommends ffmpeg")
+
   system("bundle check") || system!("bundle install")
 
   # Install JavaScript dependencies
