@@ -18,7 +18,7 @@ start({ application });
 // Back Turbo's confirm (data-turbo-confirm) with the design's styled <dialog>
 // (Components::ConfirmDialog in the layout) instead of the native browser confirm.
 // Swap in the action's message; resolve true only when the Delete button submits.
-Turbo.setConfirmMethod((message) => {
+Turbo.config.forms.confirm = (message) => {
   const dialog = document.getElementById("confirm-dialog");
   const messageEl = dialog.querySelector(".modal-card__subhead p");
   if (messageEl && message) messageEl.textContent = message;
@@ -26,7 +26,7 @@ Turbo.setConfirmMethod((message) => {
   return new Promise((resolve) => {
     dialog.addEventListener("close", () => resolve(dialog.returnValue === "confirm"), { once: true });
   });
-});
+};
 
 // Close any open popover/modal before navigating, so a lingering click-outside
 // listener doesn't swallow the first click on the next page.
