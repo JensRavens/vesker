@@ -25,6 +25,9 @@ class LoginAndLikeTest < ApplicationSystemTestCase
       within ".modal__frame" do
         fill_in "code", with: code
         click_button "Confirm"
+        # Signed in: the modal now offers to create a passkey; decline it.
+        expect(page).to have_text("Add a passkey")
+        click_button "Not now"
       end
 
       # Modal closed, page morphed into the logged-in version (no more modal trigger).

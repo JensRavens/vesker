@@ -14,7 +14,7 @@ module Views
               form_with(url: verify_session_path, method: :patch) do |f|
                 stack(gap: 14) do
                   text(type: "caption-bold", color: "danger") { @error } if @error
-                  f.code_field :code, autofocus: true, maxlength: Login::CODE_LENGTH, placeholder: "······"
+                  f.code_field :code, autofocus: true, maxlength: Login::EmailCode::CODE_LENGTH, placeholder: "······"
                   f.button t(".submit")
                 end
               end

@@ -16,6 +16,7 @@ class User < ApplicationRecord
 
   has_many :ownerships, dependent: :destroy
   has_many :albums, through: :ownerships
+  has_many :passkeys, dependent: :destroy
 
   normalizes :email, with: ->(email) { email.strip.downcase }
 

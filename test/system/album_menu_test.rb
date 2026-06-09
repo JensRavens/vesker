@@ -38,6 +38,7 @@ class AlbumMenuTest < ApplicationSystemTestCase
       within ".modal__frame" do
         fill_in "code", with: code
         click_button "Confirm"
+        click_button "Not now"
       end
       expect(page).to have_no_css(".modal--open")
 

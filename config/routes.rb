@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   end
   delete "logout", to: "sessions#destroy"
 
+  # Register a passkey for the signed-in user (the login modal's post-login step).
+  resources :passkeys, only: [:create]
+
   resources :albums, only: [:show, :new, :update] do
     resources :moments, only: [:show, :destroy] do
       resource :like, only: [:create, :destroy]
