@@ -46,4 +46,13 @@ class SessionsController < ApplicationController
     login.sign_out
     redirect_back fallback_location: "/", allow_other_host: false
   end
+
+  private
+
+  # The credential JSON the passkey Stimulus controller posts in a hidden field.
+  def credential_param
+    JSON.parse(params.require(:credential))
+  rescue JSON::ParserError
+    {}
+  end
 end

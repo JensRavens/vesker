@@ -13,6 +13,12 @@ module SessionTestHelper
     end
   end
 
+  # Sign out by clearing the browser's cookies (drops the `:user_id` cookie). Takes effect
+  # on the next `visit`.
+  def logout
+    page.driver.with_playwright_page { |pw_page| pw_page.context.clear_cookies }
+  end
+
   private
 
   # The wire value Rails would write for `cookies.encrypted[:user_id] = user.id`,
