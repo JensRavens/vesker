@@ -25,6 +25,29 @@ class MomentsTest < ApplicationSystemTestCase
       expect(page).to have_current_path(album_moment_path(album, second))
       expect(page).to have_link("Previous moment")
     end
+
+    it "skips a moment that is still processing" do
+      album = albums.lisbon
+      first, second, third = album.moments.chronologic.first(3)
+      second.update_column(:captured_at, nil) # mid-sequence, still analyzing
+
+      visit album_moment_path(album, first)
+      click_link "Next moment"
+
+      expect(page).to have_current_path(album_moment_path(album, third))
+    end
+  end
+
+  describe "a moment that is still processing" do
+    it "404s its detail page until it is ready" do
+      moment = Photo.new(album: albums.lisbon, uploader: ownerships.priya)
+      moment.file.attach(io: StringIO.new("img"), filename: "p.png", content_type: "image/png")
+      moment.save! # not analyzed -> captured_at nil -> pending
+
+      visit album_moment_path(albums.lisbon, moment)
+
+      expect(page).to have_content("This album link")
+    end
   end
 
   describe "deleting a moment" do

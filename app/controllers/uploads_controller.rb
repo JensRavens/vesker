@@ -12,7 +12,7 @@ class UploadsController < ApplicationController
   # The files are already in storage (direct upload); turn each signed blob into a
   # moment, then close the modal and refresh the timeline.
   def create
-    Array(params[:signed_ids]).reject(&:blank?).each do |signed_id|
+    Array(params[:signed_ids]).reject(&:blank?).uniq.each do |signed_id|
       blob = ActiveStorage::Blob.find_signed!(signed_id)
       (blob.video? ? Video : Photo).create!(album: @album, uploader:, file: blob)
     end

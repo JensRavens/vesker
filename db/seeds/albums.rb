@@ -57,13 +57,22 @@ uploader_cycle = people.keys.cycle
   end
 end
 
-items.each do |item|
-  video = item[:kind] == :video
-  table = video ? videos : photos
-  attrs = {album:, uploader: people.fetch(item[:by]), captured_at: item[:at], file: video ? video_for.call : file_for.call}
-  record = item[:key] ? table.create(item[:key], **attrs) : table.create(**attrs)
-  # Analyze videos up front so `duration` is available without waiting on the async job.
-  record.file.blob.analyze if video
+# Run Active Storage's AnalyzeJob inline (and in-process) as each moment is created, so the
+# `after_file_analyzed` hook analyzes, warms the grid representation, and reveals it before the seed
+# finishes. Inline keeps it off a running dev worker, which would otherwise race the warming and
+# corrupt SQLite. The curated `captured_at:` below wins over the file's own date, so the whole set
+# stays on the intended June-2026 timeline (videos included). Needs libvips/ffmpeg.
+previous_adapter = ActiveJob::Base.queue_adapter
+ActiveJob::Base.queue_adapter = :inline
+begin
+  items.each do |item|
+    video = item[:kind] == :video
+    table = video ? videos : photos
+    attrs = {album:, uploader: people.fetch(item[:by]), captured_at: item[:at], file: video ? video_for.call : file_for.call}
+    item[:key] ? table.create(item[:key], **attrs) : table.create(**attrs)
+  end
+ensure
+  ActiveJob::Base.queue_adapter = previous_adapter
 end
 
 # Likes (one per ownership per moment).

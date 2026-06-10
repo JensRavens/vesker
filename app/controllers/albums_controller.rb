@@ -24,15 +24,18 @@ class AlbumsController < ApplicationController
     @album = Album.find_by!(slug: params[:id])
     @users = @album.users
     @selected_user_ids = params[:people].to_s.split(",").select(&:present?)
-
-    @moments = @album.moments.chronologic.includes(:album, :uploader, file_attachment: :blob)
+    @moments = @album.moments.ready.chronologic.includes(:album, :uploader, file_attachment: :blob)
+    pending = @album.moments.pending
     if @selected_user_ids.any?
-      @moments = @moments.where(uploader_id: @album.ownerships.where(user_id: @selected_user_ids).select(:id))
+      uploader_ids = @album.ownerships.where(user_id: @selected_user_ids).select(:id)
+      @moments = @moments.where(uploader_id: uploader_ids)
+      pending = pending.where(uploader_id: uploader_ids) # keep the count consistent with the filtered grid
     end
+    @pending_count = pending.count
 
     render Views::Albums::Show.new(
       album: @album, moments: @moments, users: @users,
-      selected_user_ids: @selected_user_ids
+      selected_user_ids: @selected_user_ids, pending_count: @pending_count
     )
   end
 
@@ -80,7 +83,7 @@ class AlbumsController < ApplicationController
   # already participate — downloading never joins them to the album).
   def download
     @album = Album.find_by!(slug: params[:id])
-    moments = @album.moments.chronologic.includes(file_attachment: :blob)
+    moments = @album.moments.ready.chronologic.includes(file_attachment: :blob)
     if params[:scope] == "others" && (mine = @album.ownerships.find_by(user: current_user))
       moments = moments.where.not(uploader_id: mine.id)
     end

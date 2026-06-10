@@ -15,6 +15,11 @@ class Comment < ApplicationRecord
 
   validates :body, presence: true, length: {maximum: 5_000}
 
+  # counter_cache bumps comments_count via raw SQL (no moment callback), so broadcast from here —
+  # to the album (grid tile counts) and the moment (its detail page).
+  broadcasts_refreshes_to ->(comment) { comment.moment.album }
+  broadcasts_refreshes_to ->(comment) { comment.moment }
+
   # The author's color, derived from its position among the album's users.
   def author_color
     @author_color ||= Components::Palette.new.hex(moment.album.users.index { |user| user.id == author.user_id })

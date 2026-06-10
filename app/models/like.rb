@@ -13,4 +13,9 @@ class Like < ApplicationRecord
   belongs_to :ownership
 
   validates :ownership_id, uniqueness: {scope: :moment_id}
+
+  # counter_cache bumps likes_count via raw SQL (no moment callback), so broadcast from here —
+  # to the album (grid tile counts) and the moment (its detail page).
+  broadcasts_refreshes_to ->(like) { like.moment.album }
+  broadcasts_refreshes_to ->(like) { like.moment }
 end

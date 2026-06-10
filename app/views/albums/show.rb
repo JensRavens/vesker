@@ -5,6 +5,7 @@ module Views
       prop :moments, _Enumerable(Moment)
       prop :users, _Enumerable(User)
       prop :selected_user_ids, _Enumerable(String), default: -> { [] }
+      prop :pending_count, Integer, default: 0
 
       def view_template
         page_meta(
@@ -13,10 +14,14 @@ module Views
           image: cover_file
         )
 
+        # Newly-ready moments (and like/comment counts) morph in via this stream.
+        turbo_stream_from(@album)
+
         render Components::Hero.new(
           album: @album, users: @users, moment_count: @moments.size,
           selected_user_ids: @selected_user_ids
         )
+        render Components::ProcessingNotice.new(count: @pending_count) if @pending_count.positive?
         days.each { |date, moments| render Components::DaySection.new(date:, moments:) }
         render Components::Footer.new
       end

@@ -1,0 +1,27 @@
+.processing-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 14px auto;
+  padding: 8px 16px;
+  width: fit-content;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-text-secondary);
+
+  &__spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--color-accent);
+    border-top-color: transparent;
+    animation: processing-notice-spin 700ms linear infinite;
+  }
+}
+
+@keyframes processing-notice-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

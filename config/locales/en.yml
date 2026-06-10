@@ -92,6 +92,10 @@ en:
       item_count:
         one: "1 item"
         other: "%{count} items"
+    processing_notice:
+      message:
+        one: "1 item still being analyzed"
+        other: "%{count} items still being analyzed"
     footer:
       message: "That's the trip so far ✦"
     moment_detail:

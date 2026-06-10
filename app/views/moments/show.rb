@@ -11,6 +11,9 @@ module Views
       def view_template
         page_meta(title: @album.title, image: @moment.file)
 
+        # Likes/comments on this moment morph the page in live.
+        turbo_stream_from(@moment)
+
         render Components::MomentDetail.new(
           album: @album, moment: @moment, comments: @comments, liked: @liked,
           previous_moment: @previous_moment, next_moment: @next_moment

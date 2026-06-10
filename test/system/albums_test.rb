@@ -10,6 +10,15 @@ class AlbumsTest < ApplicationSystemTestCase
       expect(page).to have_css(".moment-tile", count: 33)
     end
 
+    it "hides moments that are still processing and shows the count" do
+      photos.tram.update_column(:captured_at, nil) # simulate one still analyzing
+
+      visit album_path(albums.lisbon)
+
+      expect(page).to have_css(".moment-tile", count: 32)
+      expect(page).to have_content("1 item still being analyzed")
+    end
+
     it "filters the timeline by participant via the people picker popover" do
       visit album_path(albums.lisbon)
 

@@ -25,9 +25,17 @@ class UploadTest < ApplicationSystemTestCase
         click_button "Add 1 to album"
       end
 
-      # Modal closed, timeline refreshed with the new moment.
+      # Modal closes; the upload is queued for processing — shown as pending, not yet in the grid.
       expect(page).to have_no_css(".modal--open")
+      expect(page).to have_content("1 item still being analyzed")
+      expect(page).to have_css(".moment-tile", count: initial)
+
+      # Once the background processing finishes the moment is ready and appears (a broadcast
+      # morphs it in live; here we drain the jobs and revisit, since cable is a no-op in tests).
+      run_jobs
+      visit album_path(album)
       expect(page).to have_css(".moment-tile", count: initial + 1)
+      expect(page).to have_no_content("still being analyzed")
     end
   end
 end
