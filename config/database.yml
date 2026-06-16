@@ -8,6 +8,8 @@ default: &default
   adapter: sqlite3
   max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
+  # Acquire the write lock at BEGIN rather than on first write, to reduce SQLITE_BUSY under concurrent writers.
+  default_transaction_mode: immediate
 
 # Development and production both run Solid Queue/Cache/Cable, so each gets its own
 # primary + cache + queue + cable SQLite database. Test stays single-db.

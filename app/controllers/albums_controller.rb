@@ -18,7 +18,7 @@ class AlbumsController < ApplicationController
   def show
     @album = Album.find_by!(slug: params[:id])
     @users = @album.users
-    @selected_user_ids = params[:people].to_s.split(",").select(&:present?)
+    @selected_user_ids = selected_user_ids(@users)
     @moments = @album.moments.ready.chronologic.includes(:album, :uploader, file_attachment: :blob)
     pending = @album.moments.pending
     if @selected_user_ids.any?
@@ -37,7 +37,7 @@ class AlbumsController < ApplicationController
   def people
     @album = Album.find_by!(slug: params[:id])
     @users = @album.users
-    @selected_user_ids = params[:people].to_s.split(",").select(&:present?)
+    @selected_user_ids = selected_user_ids(@users)
 
     render Components::PeoplePicker.new(album: @album, users: @users, selected_user_ids: @selected_user_ids), layout: false
   end
@@ -93,6 +93,11 @@ class AlbumsController < ApplicationController
   end
 
   private
+
+  # Parse ?people=id,id and keep only ids that actually belong to this album's participants.
+  def selected_user_ids(users)
+    params[:people].to_s.split(",").select(&:present?) & users.map(&:id)
+  end
 
   def zip_filename
     "#{@album.title.to_s.parameterize.presence || "album"}.zip"

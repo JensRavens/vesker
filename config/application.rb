@@ -30,6 +30,10 @@ module Vesker
     # Style every form by default — f.text_field / f.button come out with our classes.
     config.action_view.default_form_builder = "ApplicationFormBuilder"
 
+    # Enqueue jobs only after the surrounding DB transaction commits, so a job can never
+    # run against records that haven't been written yet (e.g. AnalyzeJob before the moment exists).
+    config.active_job.enqueue_after_transaction_commit = :always
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
