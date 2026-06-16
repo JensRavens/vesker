@@ -13,27 +13,19 @@ class Album < ApplicationRecord
   # (the title may be blank at creation). Stable across renames.
   has_secure_token :slug
 
-  has_many :ownerships, dependent: :destroy
   has_many :moments, dependent: :destroy
-  has_many :users, through: :ownerships
-
-  # A read-only view of the creator's ownership; the records are owned (and destroyed)
-  # by `has_many :ownerships` above, so no separate :dependent here.
-  has_one :creator_ownership, -> { where(role: :creator) }, # rubocop:disable Rails/HasManyOrHasOneDependent
-    class_name: "Ownership", inverse_of: :album
-  has_one :creator, through: :creator_ownership, source: :user
 
   def to_param
     slug
   end
 
-  # The user's ownership in this album, joining them as a contributor on first
-  # contribution (liking, uploading). find_or_create_by! (not create_or_find_by!)
-  # because Ownership's uniqueness validation fires before the DB constraint; the
-  # rescue covers the rare concurrent first-time join.
-  def ownership_for(user)
-    ownerships.find_or_create_by!(user:)
-  rescue ActiveRecord::RecordNotUnique
-    retry
+  # The album's participants: everyone who has uploaded a moment, ordered by their first
+  # upload (so index 0 is the first contributor). A user's index here maps to their palette
+  # color. Memoized + materialized so the per-moment color lookup doesn't re-query the grid.
+  def users
+    @users ||= User
+      .joins(:moments).where(moments: {album_id: id})
+      .group("users.id").order(Arel.sql("MIN(moments.created_at)"))
+      .to_a
   end
 end

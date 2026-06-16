@@ -63,9 +63,9 @@ module Components
 
     def header
       div(class: "moment-detail__header") do
-        render Avatar.new(user: @moment.uploader.user, color: @moment.uploader_color, size: 34)
+        render Avatar.new(user: @moment.uploader, color: @moment.uploader_color, size: 34)
         div(class: "moment-detail__byline") do
-          text(type: "caption-bold", element: :span) { @moment.uploader.user.name }
+          text(type: "caption-bold", element: :span) { @moment.uploader.name }
           text(type: "caption", element: :span, color: "muted") { l(@moment.captured_at, format: :capture) }
         end
       end

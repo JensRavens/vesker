@@ -4,9 +4,9 @@ class MomentsController < ApplicationController
   def show
     @album = Album.find_by!(slug: params[:album_id])
     # `.ready` so a not-yet-processed moment 404s instead of rendering a nil captured_at.
-    @moment = @album.moments.ready.includes(:album, file_attachment: :blob, uploader: :user).find(params[:id])
-    @comments = @moment.comments.order(created_at: :desc, id: :desc).includes(author: :user)
-    @liked = current_user.present? && @moment.likes.joins(:ownership).exists?(ownerships: {user_id: current_user.id})
+    @moment = @album.moments.ready.includes(:album, :uploader, file_attachment: :blob).find(params[:id])
+    @comments = @moment.comments.order(created_at: :desc, id: :desc).includes(:author)
+    @liked = current_user.present? && @moment.likes.exists?(user: current_user)
 
     render Views::Moments::Show.new(
       album: @album, moment: @moment, comments: @comments, liked: @liked,

@@ -40,7 +40,7 @@ class MomentsTest < ApplicationSystemTestCase
 
   describe "a moment that is still processing" do
     it "404s its detail page until it is ready" do
-      moment = Photo.new(album: albums.lisbon, uploader: ownerships.priya)
+      moment = Photo.new(album: albums.lisbon, uploader: users.priya)
       moment.file.attach(io: StringIO.new("img"), filename: "p.png", content_type: "image/png")
       moment.save! # not analyzed -> captured_at nil -> pending
 

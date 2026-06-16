@@ -9,17 +9,9 @@ class UserTest < ActiveSupport::TestCase
   end
 
   describe "#admin?" do
-    it "is true only when the roles array contains \"admin\"" do
-      expect(User.new(roles: ["admin"]).admin?).to eq(true)
-      expect(User.new(roles: []).admin?).to eq(false)
-    end
-  end
-
-  describe "roles validation" do
-    it "rejects unknown roles" do
-      user = User.new(email: "x@y.io", roles: ["wizard"])
-      expect(user).not_to be_valid
-      expect(user.errors[:roles]).to be_present
+    it "reflects the admin flag" do
+      expect(User.new(admin: true).admin?).to eq(true)
+      expect(User.new(admin: false).admin?).to eq(false)
     end
   end
 

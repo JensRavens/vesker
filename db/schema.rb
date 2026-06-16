@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_10_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_16_120000) do
   create_table "active_storage_attachments", id: :string, force: :cascade do |t|
     t.string "blob_id", null: false
     t.datetime "created_at", null: false
@@ -60,10 +60,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_130000) do
   create_table "likes", id: :string, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "moment_id", null: false
-    t.string "ownership_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["moment_id", "ownership_id"], name: "index_likes_on_moment_id_and_ownership_id", unique: true
-    t.index ["ownership_id"], name: "index_likes_on_ownership_id"
+    t.string "user_id", null: false
+    t.index ["moment_id", "user_id"], name: "index_likes_on_moment_id_and_user_id", unique: true
+    t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
   create_table "moments", id: :string, force: :cascade do |t|
@@ -80,19 +80,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_130000) do
     t.index ["uploader_id"], name: "index_moments_on_uploader_id"
   end
 
-  create_table "ownerships", id: :string, force: :cascade do |t|
-    t.string "album_id", null: false
-    t.datetime "created_at", null: false
-    t.integer "moments_count", default: 0, null: false
-    t.integer "position", null: false
-    t.integer "role", default: 0, null: false
-    t.datetime "updated_at", null: false
-    t.string "user_id", null: false
-    t.index ["album_id", "position"], name: "index_ownerships_on_album_id_and_position", unique: true
-    t.index ["album_id", "user_id"], name: "index_ownerships_on_album_id_and_user_id", unique: true
-    t.index ["user_id"], name: "index_ownerships_on_user_id"
-  end
-
   create_table "passkeys", id: :string, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "external_id", null: false
@@ -106,10 +93,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_130000) do
   end
 
   create_table "users", id: :string, force: :cascade do |t|
+    t.boolean "admin", default: false, null: false
     t.datetime "created_at", null: false
     t.string "email", null: false
     t.string "name", null: false
-    t.json "roles", default: [], null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end
@@ -117,12 +104,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_10_130000) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "moments"
-  add_foreign_key "comments", "ownerships", column: "author_id"
+  add_foreign_key "comments", "users", column: "author_id"
   add_foreign_key "likes", "moments"
-  add_foreign_key "likes", "ownerships"
+  add_foreign_key "likes", "users"
   add_foreign_key "moments", "albums"
-  add_foreign_key "moments", "ownerships", column: "uploader_id"
-  add_foreign_key "ownerships", "albums"
-  add_foreign_key "ownerships", "users"
+  add_foreign_key "moments", "users", column: "uploader_id"
   add_foreign_key "passkeys", "users"
 end

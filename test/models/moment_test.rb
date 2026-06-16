@@ -3,13 +3,13 @@ require "test_helper"
 class MomentTest < ActiveSupport::TestCase
   describe "validations" do
     it "requires an attached file" do
-      expect(Photo.new(album: albums.lisbon, uploader: ownerships.priya)).not_to be_valid
+      expect(Photo.new(album: albums.lisbon, uploader: users.priya)).not_to be_valid
     end
   end
 
   describe "#captured_at" do
     it "is assigned from EXIF once the file is analyzed" do
-      photo = Photo.new(album: albums.lisbon, uploader: ownerships.priya)
+      photo = Photo.new(album: albums.lisbon, uploader: users.priya)
       photo.file.attach(io: file_fixture("exif_sample.jpg").open, filename: "exif_sample.jpg", content_type: "image/jpeg")
       photo.save!
       photo.file.blob.analyze # what Active Storage's AnalyzeJob does; fires after_analyze_attached
@@ -52,14 +52,14 @@ class MomentTest < ActiveSupport::TestCase
   end
 
   def upload_photo
-    Photo.new(album: albums.lisbon, uploader: ownerships.priya).tap do |photo|
+    Photo.new(album: albums.lisbon, uploader: users.priya).tap do |photo|
       photo.file.attach(io: StringIO.new("img"), filename: "p.png", content_type: "image/png")
       photo.save!
     end
   end
 
   def upload_real_photo
-    Photo.new(album: albums.lisbon, uploader: ownerships.priya).tap do |photo|
+    Photo.new(album: albums.lisbon, uploader: users.priya).tap do |photo|
       photo.file.attach(io: file_fixture("exif_sample.jpg").open, filename: "exif_sample.jpg", content_type: "image/jpeg")
       photo.save!
     end

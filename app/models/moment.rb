@@ -14,7 +14,7 @@
 #
 class Moment < ApplicationRecord
   belongs_to :album
-  belongs_to :uploader, class_name: "Ownership", counter_cache: :moments_count, inverse_of: :moments
+  belongs_to :uploader, class_name: "User", inverse_of: :moments
 
   has_many :likes, dependent: :destroy
   has_many :comments, dependent: :destroy
@@ -52,7 +52,7 @@ class Moment < ApplicationRecord
 
   # The uploader's color, derived from its position among the album's users.
   def uploader_color
-    @uploader_color ||= Components::Palette.new.hex(album.users.index { |user| user.id == uploader.user_id })
+    @uploader_color ||= Components::Palette.new.hex(album.users.index { |user| user.id == uploader_id })
   end
 
   private

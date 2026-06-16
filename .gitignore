@@ -16,3 +16,4 @@ node_modules
 # Secrets — never commit. Production reads SECRET_KEY_BASE from the environment.
 /config/master.key
 /config/credentials.yml.enc
+.claude/settings.local.json

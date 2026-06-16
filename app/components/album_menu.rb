@@ -16,7 +16,7 @@ module Components
 
     private
 
-    # Opens the rename modal (creator only; modal_controller closes this popover on open).
+    # Opens the rename modal (admin only; modal_controller closes this popover on open).
     def rename_row
       button(type: "button", class: "album-menu__row",
         data: {controller: "modal", action: "modal#open", modal_url_value: edit_album_path(@album)}) do

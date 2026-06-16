@@ -2,22 +2,17 @@ class AlbumsController < ApplicationController
   include ZipKit::RailsStreaming
   include Shimmer::RemoteNavigation
 
-  before_action :require_login, only: :new
+  before_action :require_login, only: :create
 
   # The site root: a landing page prompting the visitor to create an album.
   def index
     render Views::Albums::Index.new
   end
 
-  def new
+  def create
     authorize Album, :create?
 
-    album = Album.transaction do
-      album = Album.create!
-      album.ownerships.create!(user: current_user, role: :creator)
-      album
-    end
-    redirect_to album
+    redirect_to Album.create!
   end
 
   def show
@@ -27,9 +22,8 @@ class AlbumsController < ApplicationController
     @moments = @album.moments.ready.chronologic.includes(:album, :uploader, file_attachment: :blob)
     pending = @album.moments.pending
     if @selected_user_ids.any?
-      uploader_ids = @album.ownerships.where(user_id: @selected_user_ids).select(:id)
-      @moments = @moments.where(uploader_id: uploader_ids)
-      pending = pending.where(uploader_id: uploader_ids) # keep the count consistent with the filtered grid
+      @moments = @moments.where(uploader_id: @selected_user_ids)
+      pending = pending.where(uploader_id: @selected_user_ids) # keep the count consistent with the filtered grid
     end
     @pending_count = pending.count
 
@@ -55,7 +49,7 @@ class AlbumsController < ApplicationController
     render Components::AlbumMenu.new(album: @album), layout: false
   end
 
-  # The rename modal (lazy-loaded into the Shimmer modal), creator only.
+  # The rename modal (lazy-loaded into the Shimmer modal), admin only.
   def edit
     @album = Album.find_by!(slug: params[:id])
     authorize @album, :edit?
@@ -79,13 +73,12 @@ class AlbumsController < ApplicationController
     render Views::Albums::Share.new(album: @album, url:, qr_svg: qr), layout: false
   end
 
-  # Stream a zip of the album's media. ?scope=others drops the viewer's own uploads (only if they
-  # already participate — downloading never joins them to the album).
+  # Stream a zip of the album's media. ?scope=others drops the viewer's own uploads.
   def download
     @album = Album.find_by!(slug: params[:id])
     moments = @album.moments.ready.chronologic.includes(file_attachment: :blob)
-    if params[:scope] == "others" && (mine = @album.ownerships.find_by(user: current_user))
-      moments = moments.where.not(uploader_id: mine.id)
+    if params[:scope] == "others" && current_user
+      moments = moments.where.not(uploader_id: current_user.id)
     end
 
     zip_kit_stream(filename: zip_filename) do |zip|

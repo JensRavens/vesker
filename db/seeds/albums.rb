@@ -18,17 +18,17 @@ end
 # Fixed slug so the album is trivial to open in development (/albums/test).
 album = albums.create(:lisbon, title: "Lisbon & the Algarve", slug: "test")
 
-# Ownerships: created creator-first; the positioning gem assigns `position` in creation order,
-# and a user's index in that order maps to their palette color (first = ember).
-priya = ownerships.create(:priya, album:, role: :creator, user: users.create(:priya, unique_by: :email, name: "Priya", email: "priya@example.com"))
-marco = ownerships.create(:marco, album:, user: users.create(:marco, unique_by: :email, name: "Marco", email: "marco@example.com", roles: ["admin"]))
-lena = ownerships.create(:lena, album:, user: users.create(:lena, unique_by: :email, name: "Lena", email: "lena@example.com"))
-jonas = ownerships.create(:jonas, album:, user: users.create(:jonas, unique_by: :email, name: "Jonas", email: "jonas@example.com"))
-ada = ownerships.create(:ada, album:, user: users.create(:ada, unique_by: :email, name: "Ada", email: "ada@example.com"))
-theo = ownerships.create(:theo, album:, user: users.create(:theo, unique_by: :email, name: "Theo", email: "theo@example.com"))
+# The people. Marco is the site admin; everyone else is a plain user. A person's palette color
+# is their index among the album's uploaders, ordered by first upload (see Album#users).
+priya = users.create(:priya, unique_by: :email, name: "Priya", email: "priya@example.com")
+marco = users.create(:marco, unique_by: :email, name: "Marco", email: "marco@example.com", admin: true)
+lena = users.create(:lena, unique_by: :email, name: "Lena", email: "lena@example.com")
+jonas = users.create(:jonas, unique_by: :email, name: "Jonas", email: "jonas@example.com")
+ada = users.create(:ada, unique_by: :email, name: "Ada", email: "ada@example.com")
+theo = users.create(:theo, unique_by: :email, name: "Theo", email: "theo@example.com")
 people = {priya:, marco:, lena:, jonas:, ada:, theo:}
 
-# A user with no album membership — handy for tests that need a fresh-to-the-album person.
+# A user who never uploads to the album — handy for tests that need a fresh-to-the-album person.
 users.create(:nomad, unique_by: :email, name: "Nomad", email: "nomad@example.com")
 
 start = Time.utc(2026, 6, 14, 9, 0, 0)
@@ -75,12 +75,12 @@ ensure
   ActiveJob::Base.queue_adapter = previous_adapter
 end
 
-# Likes (one per ownership per moment).
-[:marco, :lena, :jonas].each { |k| likes.create(moment: photos.tram, ownership: people[k]) }
-[:priya, :ada].each { |k| likes.create(moment: photos.tiles, ownership: people[k]) }
-[:marco, :lena, :jonas, :ada].each { |k| likes.create(moment: photos.rooftop, ownership: people[k]) }
-[:priya, :marco, :jonas, :ada].each { |k| likes.create(moment: photos.bluehour, ownership: people[k]) }
-[:marco, :lena, :jonas, :ada, :theo].each { |k| likes.create(moment: photos.lastnight, ownership: people[k]) }
+# Likes (one per user per moment).
+[:marco, :lena, :jonas].each { |k| likes.create(moment: photos.tram, user: people[k]) }
+[:priya, :ada].each { |k| likes.create(moment: photos.tiles, user: people[k]) }
+[:marco, :lena, :jonas, :ada].each { |k| likes.create(moment: photos.rooftop, user: people[k]) }
+[:priya, :marco, :jonas, :ada].each { |k| likes.create(moment: photos.bluehour, user: people[k]) }
+[:marco, :lena, :jonas, :ada, :theo].each { |k| likes.create(moment: photos.lastnight, user: people[k]) }
 
 # Comments.
 comments.create(moment: photos.tram, author: lena, body: "this is SO lisbon")

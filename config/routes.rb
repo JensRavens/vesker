@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   # Register a passkey for the signed-in user (the login modal's post-login step).
   resources :passkeys, only: [:create]
 
-  resources :albums, only: [:show, :new, :update] do
+  resources :albums, only: [:show, :create, :update] do
     resources :moments, only: [:show, :destroy] do
       resource :like, only: [:create, :destroy]
       resources :comments, only: [:create]

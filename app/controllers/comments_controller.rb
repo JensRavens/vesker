@@ -4,7 +4,7 @@ class CommentsController < ApplicationController
   def create
     album = Album.find_by!(slug: params[:album_id])
     moment = album.moments.find(params[:moment_id])
-    moment.comments.create!(comment_params.merge(author: album.ownership_for(current_user)))
+    moment.comments.create!(comment_params.merge(author: current_user))
     redirect_to album_moment_path(album, moment)
   end
 

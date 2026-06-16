@@ -48,18 +48,18 @@ class AlbumsTest < ApplicationSystemTestCase
       login users.marco # Marco is a site admin
       visit root_path
 
-      click_link "Create an album"
+      click_button "Create an album"
 
-      # Lands on the freshly-created album, owned by the admin.
+      # Lands on the freshly-created (empty) album.
       expect(page).to have_current_path(%r{\A/albums/})
       album = Album.order(:created_at).last
       expect(page).to have_current_path(album_path(album))
-      expect(album.creator).to eq(users.marco)
     end
   end
 
   describe "renaming the album" do
-    it "hides the rename action from anonymous visitors" do
+    it "hides the rename action from non-admins" do
+      login users.priya # a regular user (uploaded to the album, but not an admin)
       visit album_path(albums.lisbon)
 
       find("button.hero__menu").click
@@ -68,10 +68,10 @@ class AlbumsTest < ApplicationSystemTestCase
       end
     end
 
-    it "lets the creator rename the album from the overflow menu" do
+    it "lets an admin rename the album from the overflow menu" do
       album = albums.lisbon
 
-      login users.priya # Priya is the album creator
+      login users.marco # Marco is a site admin
       visit album_path(album)
 
       find("button.hero__menu").click

@@ -14,7 +14,7 @@ class UploadsController < ApplicationController
   def create
     Array(params[:signed_ids]).reject(&:blank?).uniq.each do |signed_id|
       blob = ActiveStorage::Blob.find_signed!(signed_id)
-      (blob.video? ? Video : Photo).create!(album: @album, uploader:, file: blob)
+      (blob.video? ? Video : Photo).create!(album: @album, uploader: current_user, file: blob)
     end
     ui.navigate_to(album_path(@album))
   end
@@ -23,10 +23,5 @@ class UploadsController < ApplicationController
 
   def set_album
     @album = Album.find_by!(slug: params[:album_id])
-  end
-
-  # The contributing participant: uploading joins the user to the album.
-  def uploader
-    @uploader ||= @album.ownership_for(current_user)
   end
 end

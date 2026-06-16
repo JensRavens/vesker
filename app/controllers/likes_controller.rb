@@ -2,7 +2,7 @@ class LikesController < ApplicationController
   before_action :require_login
 
   def create
-    Like.find_or_create_by!(moment:, ownership:)
+    Like.find_or_create_by!(moment:, user: current_user)
     redirect_to album_moment_path(@album, moment)
   rescue ActiveRecord::RecordNotUnique
     # Lost a race with a concurrent like — the row exists now, so just retry the find.
@@ -10,7 +10,7 @@ class LikesController < ApplicationController
   end
 
   def destroy
-    Like.where(moment:, ownership:).destroy_all
+    Like.where(moment:, user: current_user).destroy_all
     redirect_to album_moment_path(@album, moment)
   end
 
@@ -22,10 +22,5 @@ class LikesController < ApplicationController
 
   def album
     @album ||= Album.find_by!(slug: params[:album_id])
-  end
-
-  # The liking participant: a user who likes within an album joins it as a contributor.
-  def ownership
-    @ownership ||= album.ownership_for(current_user)
   end
 end

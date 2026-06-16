@@ -1,5 +1,7 @@
 module Components
   class Landing < Base
+    include Phlex::Rails::Helpers::FormWith
+
     def view_template
       div(class: "landing") do
         div(class: "landing__glow")
@@ -22,15 +24,17 @@ module Components
     private
 
     # Creating is admin-only. A guest sees the button and it opens the login modal (an
-    # admin can then sign in and create); a signed-in admin gets the create link; a
-    # signed-in non-admin sees no button at all.
+    # admin can then sign in and create); a signed-in admin gets a button that POSTs a new
+    # album; a signed-in non-admin sees no button at all.
     def create_button
       if current_user.nil?
         render Button.new(data: {controller: "modal", action: "modal#open", modal_url_value: new_session_path}) do
           create_label
         end
       elsif policy(Album).create?
-        render Button.new(href: new_album_path) { create_label }
+        form_with(url: albums_path, method: :post) do |f|
+          f.button { create_label }
+        end
       end
     end
 
