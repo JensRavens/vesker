@@ -326,7 +326,7 @@ GEM
     safety_net_attestation (0.5.0)
       jwt (>= 2.0, < 4.0)
     securerandom (0.4.1)
-    shimmer (0.0.45)
+    shimmer (0.0.46)
     solid_cable (4.0.0)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -581,7 +581,7 @@ CHECKSUMS
   ruby-vips (2.3.0) sha256=e685ec02c13969912debbd98019e50492e12989282da5f37d05f5471442f5374
   safety_net_attestation (0.5.0) sha256=c8cd01dd550dbe8553862918af6355a04672db11d218ec96104ce3955293f2aa
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
-  shimmer (0.0.45) sha256=008fcde146e7c259c65b77b2e2033dc0c6d6f6abaf74831d5def369cd5502dd8
+  shimmer (0.0.46) sha256=8f5457ab22ebc8cb45b8e5112f658246c3c2ae340aae0de45039de2a7f618ac3
   solid_cable (4.0.0) sha256=8379680ef6bf36e195eb876a6306ea290f87d5fa10bc4a757bc2a918f83229b5
   solid_cache (1.0.10) sha256=bc05a2fb3ac78a6f43cbb5946679cf9db67dd30d22939ededc385cb93e120d41
   solid_queue (1.4.0) sha256=e6a18d196f0b27cb6e3c77c5b31258b05fb634f8ed64fb1866ed164047216c2a
