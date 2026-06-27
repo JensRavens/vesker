@@ -5,9 +5,10 @@ servers:
   web:
     - 167.233.194.14
 
-# kamal-proxy terminates TLS (auto Let's Encrypt) and forwards HTTP to the container.
+# TLS is terminated by Cloudflare at the edge; the origin serves plain HTTP. kamal-proxy routes
+# the host on port 80 (no Let's Encrypt). Cloudflare forwards X-Forwarded-Proto, which assume_ssl trusts.
 proxy:
-  ssl: true
+  ssl: false
   host: photos.jensravens.com
   app_port: 80 # Thruster listens HTTP on 80 inside the container
   healthcheck:

@@ -79,9 +79,10 @@ bin/rails test test/lint_test.rb            # RuboCop + Brakeman as a test
 ## Deployment
 
 Vesker deploys with **[Kamal](https://kamal-deploy.org)** to a single server (see
-[config/deploy.yml](config/deploy.yml)). `kamal-proxy` terminates TLS (an automatic Let's Encrypt
-cert for `HOST`) in front of the container; inside it, Thruster serves assets over HTTP and Puma
-runs the Solid Queue worker. The image migrates the database on boot.
+[config/deploy.yml](config/deploy.yml)). **TLS is terminated by Cloudflare** at the edge; the origin
+serves plain HTTP, where `kamal-proxy` routes `HOST` on port 80, Thruster serves assets, and Puma
+runs the Solid Queue worker. The image migrates the database on boot. (Cloudflare SSL mode must be
+*Flexible*, or *Full* with a Cloudflare Origin Certificate.)
 
 It deploys **without an external registry** — Kamal runs a local registry on the deploy machine and
 the server pulls over the SSH tunnel. The build host is ARM and the server is AMD, so the image is

@@ -24,8 +24,8 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # TLS is terminated by kamal-proxy (Let's Encrypt cert for HOST); it forwards X-Forwarded-Proto,
-  # so the app sits behind SSL. Thruster runs HTTP-only inside the container.
+  # TLS is terminated by Cloudflare at the edge; it forwards X-Forwarded-Proto, so the app sits
+  # behind SSL. kamal-proxy and Thruster both run HTTP-only at the origin.
   config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
@@ -66,10 +66,11 @@ Rails.application.configure do
   # env boots without them — a real send then fails loudly via raise_delivery_errors if unconfigured).
   config.action_mailer.smtp_settings = {
     address: Config.smtp_address || "localhost",
-    port: Config.smtp_port || 587,
     user_name: Config.smtp_user_name,
     password: Config.smtp_password,
-    authentication: Config.smtp_authentication || "plain"
+    port: 587,
+    authentication: :login,
+    enable_starttls_auto: true
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
