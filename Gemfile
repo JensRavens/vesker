@@ -33,6 +33,7 @@ gem "vite_rails"
 
 # Deployment
 gem "thruster", require: false
+gem "kamal", require: false
 
 group :development, :test do
   gem "debug", platforms: [:mri, :windows], require: "debug/prelude"

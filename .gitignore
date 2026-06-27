@@ -13,7 +13,10 @@ node_modules
 /.playwright-cli
 /.ruby-lsp
 
-# Secrets — never commit. Production reads SECRET_KEY_BASE from the environment.
+# Secrets — the master key never gets committed (it unlocks credentials.yml.enc, which is committed).
 /config/master.key
-/config/credentials.yml.enc
 .claude/settings.local.json
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+

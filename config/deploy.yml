@@ -1,0 +1,35 @@
+service: vesker
+image: vesker
+
+servers:
+  web:
+    - 167.233.194.14
+
+# kamal-proxy terminates TLS (auto Let's Encrypt) and forwards HTTP to the container.
+proxy:
+  ssl: true
+  host: photos.jensravens.com
+  app_port: 80 # Thruster listens HTTP on 80 inside the container
+  healthcheck:
+    path: /up
+
+# Registry-less: a local registry on the deploy machine (Kamal >= 2.8.0). No credentials needed.
+registry:
+  server: localhost:5555
+
+# Local machine is ARM; build amd64 via emulation (no remote builder).
+builder:
+  arch: amd64
+
+ssh:
+  user: root # fresh server, root access via the configured key
+
+env:
+  clear:
+    HOST: photos.jensravens.com # public, non-secret, and dev/test use localhost — stays plain config
+  secret:
+    - RAILS_MASTER_KEY # the ONLY secret Kamal injects; it unlocks config/credentials.yml.enc
+
+# Persist BOTH the SQLite databases AND uploaded photos across deploys (everything under /rails/storage).
+volumes:
+  - "vesker_storage:/rails/storage"

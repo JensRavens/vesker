@@ -24,8 +24,8 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # TLS is terminated by Thruster (bin/thrust, the container CMD) using a Let's Encrypt cert for
-  # TLS_DOMAIN (defaulted from HOST in bin/docker-entrypoint), so the app sits behind SSL.
+  # TLS is terminated by kamal-proxy (Let's Encrypt cert for HOST); it forwards X-Forwarded-Proto,
+  # so the app sits behind SSL. Thruster runs HTTP-only inside the container.
   config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
@@ -62,14 +62,14 @@ Rails.application.configure do
   # "localhost" so asset precompile can boot the env without HOST set; set HOST for a real deploy.
   config.action_mailer.default_url_options = {host: ENV.fetch("HOST", "localhost")}
 
-  # Outgoing SMTP, configured from the environment (nil creds until set, so the env boots without
-  # them; a real send then fails loudly via raise_delivery_errors if SMTP isn't configured).
+  # Outgoing SMTP, read through Config (encrypted credentials in production; nil until set, so the
+  # env boots without them — a real send then fails loudly via raise_delivery_errors if unconfigured).
   config.action_mailer.smtp_settings = {
-    address: ENV.fetch("SMTP_ADDRESS", "localhost"),
-    port: ENV.fetch("SMTP_PORT", 587),
-    user_name: ENV["SMTP_USER_NAME"],
-    password: ENV["SMTP_PASSWORD"],
-    authentication: ENV.fetch("SMTP_AUTHENTICATION", "plain")
+    address: Config.smtp_address || "localhost",
+    port: Config.smtp_port || 587,
+    user_name: Config.smtp_user_name,
+    password: Config.smtp_password,
+    authentication: Config.smtp_authentication || "plain"
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

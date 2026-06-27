@@ -27,9 +27,9 @@ Active Storage · [Vite](https://vite-ruby.netlify.app) (JS/CSS bundling) · Phl
 > **Conventions & architecture:** see [CLAUDE.md](CLAUDE.md). The project follows the
 > nerdgeschoss [n.U.T.S handbook](https://nerdgeschoss.de/handbook/nuts) — fat models / slim
 > controllers, concerns over service objects, Phlex components, Minitest + Oaken. It **deviates**
-> from the handbook in a few deliberate ways: it uses **SQLite** rather than PostgreSQL, deploys as
-> a **single Docker container** (not Dokku/Kamal), ships **JavaScript** Stimulus controllers (not
-> TypeScript), and bundles no error/uptime monitoring (wire your own).
+> from the handbook in a few deliberate ways: it uses **SQLite** rather than PostgreSQL, ships
+> **JavaScript** Stimulus controllers (not TypeScript), and bundles no error/uptime monitoring
+> (wire your own). It deploys with **Kamal** to a single server.
 
 ## Prerequisites
 
@@ -56,16 +56,17 @@ admin-only; the seeded admin is `marco@example.com`.
 
 ## Configuration
 
-Settings are read through the `Config` constant (`Config.foo` → `ENV["FOO"]`). There are **no
-encrypted Rails credentials** — production reads its secret from `SECRET_KEY_BASE`. See
-[.env.example](.env.example) for every supported variable. The essentials:
+Settings are read through the `Config` constant (`Config.foo` → `ENV["FOO"]`, then the encrypted
+credential `foo`). In **production**, secrets live in `config/credentials.yml.enc` (committed),
+unlocked by `RAILS_MASTER_KEY`; edit them with `bin/rails credentials:edit`. See
+[.env.example](.env.example) for the dev/non-secret variables. The essentials:
 
-| Variable | Purpose |
-|----------|---------|
-| `HOST` | Public host — used for mailer links, the WebAuthn relying party, OG/share URLs, and Thruster's TLS domain. |
-| `SECRET_KEY_BASE` | Signs/encrypts all cookies (sessions, login codes, WebAuthn challenges). Required in production. |
-| `SMTP_ADDRESS` / `SMTP_PORT` / `SMTP_USER_NAME` / `SMTP_PASSWORD` / `SMTP_AUTHENTICATION` | Outgoing mail (the login flow emails a code). |
-| `LOGIN_CODE` | Dev/test only — forces a fixed login code. |
+| Setting | Where | Purpose |
+|---------|-------|---------|
+| `HOST` | env (`deploy.yml` `env.clear`) | Public host — mailer links, the WebAuthn relying party, OG/share URLs. |
+| `secret_key_base` | credentials | Signs/encrypts all cookies (sessions, login codes, WebAuthn challenges). |
+| `smtp_address` / `smtp_port` / `smtp_user_name` / `smtp_password` / `smtp_authentication` | credentials | Outgoing mail (the login flow emails a code). |
+| `LOGIN_CODE` | env, dev/test only | Forces a fixed login code. |
 
 ## Testing
 
@@ -77,24 +78,33 @@ bin/rails test test/lint_test.rb            # RuboCop + Brakeman as a test
 
 ## Deployment
 
-Vesker deploys as a **single Docker container**. The image runs behind
-[Thruster](https://github.com/basecamp/thruster), which terminates TLS (a Let's Encrypt cert for
-`HOST`) and serves assets.
+Vesker deploys with **[Kamal](https://kamal-deploy.org)** to a single server (see
+[config/deploy.yml](config/deploy.yml)). `kamal-proxy` terminates TLS (an automatic Let's Encrypt
+cert for `HOST`) in front of the container; inside it, Thruster serves assets over HTTP and Puma
+runs the Solid Queue worker. The image migrates the database on boot.
+
+It deploys **without an external registry** — Kamal runs a local registry on the deploy machine and
+the server pulls over the SSH tunnel. The build host is ARM and the server is AMD, so the image is
+cross-built for `amd64` via emulation (`builder.arch: amd64`), which makes builds slow.
+
+**Secrets** live in encrypted credentials; the only thing Kamal injects is `RAILS_MASTER_KEY` (read
+from the local `config/master.key`). Before the first deploy:
 
 ```bash
-docker build -t vesker .
-docker run -d -p 80:80 -p 443:443 \
-  -v vesker-storage:/rails/storage \
-  -e SECRET_KEY_BASE="$(bin/rails secret)" \
-  -e HOST=album.example.com \
-  -e SMTP_ADDRESS=smtp.example.com -e SMTP_USER_NAME=… -e SMTP_PASSWORD=… \
-  --name vesker vesker
+bin/rails credentials:edit   # set secret_key_base + the smtp_* keys (real SMTP is required for login)
 ```
 
-**The `-v vesker-storage:/rails/storage` volume is mandatory** — every SQLite database *and* all
+Then, with DNS for `HOST` pointing at the server and Docker (buildx + amd64 emulation) available
+locally:
+
+```bash
+bin/kamal setup     # bootstraps the empty server (Docker, proxy, local registry) and deploys
+bin/kamal deploy    # subsequent releases
+```
+
+**The `vesker_storage:/rails/storage` volume is mandatory** — every SQLite database *and* all
 uploaded photos live under `storage/`, so without a persistent volume the entire dataset is lost on
-redeploy. Back up that volume. The container migrates the database on boot and runs the Solid Queue
-worker inside Puma.
+redeploy. Back it up.
 
 ## License
 
