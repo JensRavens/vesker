@@ -34,3 +34,8 @@ env:
 # Persist BOTH the SQLite databases AND uploaded photos across deploys (everything under /rails/storage).
 volumes:
   - "vesker_storage:/rails/storage"
+
+aliases:
+  console: app exec -i --reuse "bin/rails console"
+  shell: app exec -i --reuse "bash"
+  logs: app logs -f -n 100
