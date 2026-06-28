@@ -29,8 +29,10 @@ Turbo.config.forms.confirm = (message) => {
 };
 
 // Close any open popover/modal before navigating, so a lingering click-outside
-// listener doesn't swallow the first click on the next page.
-document.addEventListener("turbo:before-visit", () => {
+// listener doesn't swallow the first click on the next page. Skip same-page refreshes
+// (e.g. a live broadcast morph fired by someone's upload) so an open modal stays put.
+document.addEventListener("turbo:before-visit", (event) => {
+  if (event.detail.url === location.href) return;
   window.ui?.popover?.close();
   window.ui?.modal?.close();
 });
@@ -40,6 +42,13 @@ document.addEventListener("turbo:before-visit", () => {
 // sidebar slides in on navigation but only cross-fades on a morph (like toggle).
 document.addEventListener("turbo:before-render", (event) => {
   document.documentElement.dataset.turboRenderMethod = event.detail.renderMethod;
+});
+
+// A morph refresh syncs <body>'s class to the new page HTML, dropping the `modal-open` class that
+// dims the scrim and locks scroll. The modal element itself is data-turbo-permanent (see
+// modal_controller), so re-apply the class when one survived the morph.
+document.addEventListener("turbo:render", () => {
+  if (document.querySelector("body > .modal--open")) document.body.classList.add("modal-open");
 });
 
 import "../styles/reset.css";

@@ -25,6 +25,18 @@ class MomentTest < ActiveSupport::TestCase
     end
   end
 
+  describe ".with_checksum" do
+    it "finds an album moment by its attached file's checksum" do
+      moment = upload_photo
+
+      expect(albums.lisbon.moments.with_checksum(moment.file.checksum)).to include(moment)
+    end
+
+    it "is empty for an unknown checksum" do
+      expect(Moment.with_checksum("nope")).to be_empty
+    end
+  end
+
   describe ".ready / .pending" do
     it "partitions moments by whether processing has finished" do
       moment = upload_photo # not analyzed yet -> captured_at nil

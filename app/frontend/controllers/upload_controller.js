@@ -1,14 +1,14 @@
 import { Controller } from "@hotwired/stimulus";
 import { DirectUpload } from "@rails/activestorage";
 
-// Drives the upload sidebar: each chosen/dropped file starts an Active Storage
-// direct upload (browser → storage). At most MAX_CONCURRENT run at once; the rest
-// wait in a "queued" state and start as slots free up. Successful uploads add a
-// hidden signed_id field to the form; failures expose a Retry. Submit is enabled
-// once at least one upload is done and none are still queued or in flight.
+// Drives the upload sidebar: each chosen/dropped file starts an Active Storage direct upload
+// (browser → storage). At most MAX_CONCURRENT run at once; the rest wait in a "queued" state and
+// start as slots free up. When a file finishes uploading its row's turbo-frame form auto-submits
+// the signed blob id, and the server creates the moment (or reports a duplicate) and renders the
+// status back into that frame. Failures expose a Retry.
 export default class extends Controller {
-  static targets = ["input", "list", "rowTemplate", "fields", "submit", "count"];
-  static values = { directUploadUrl: String, labels: Object };
+  static targets = ["input", "list", "rowTemplate", "count"];
+  static values = { directUploadUrl: String };
 
   static MAX_CONCURRENT = 5;
 
@@ -28,6 +28,7 @@ export default class extends Controller {
   addFile(file) {
     const row = this.rowTemplateTarget.content.firstElementChild.cloneNode(true);
     this.files.set(row, file);
+    row.querySelector("turbo-frame").id = `upload_row_${this.idCounter++}`;
     row.querySelector(".upload-sidebar__name").textContent = file.name;
     if (file.type.startsWith("image/")) {
       row.querySelector(".upload-sidebar__thumb").style.backgroundImage = `url(${URL.createObjectURL(file)})`;
@@ -38,7 +39,6 @@ export default class extends Controller {
 
   // Mark the row as waiting and try to fill an upload slot.
   enqueue(row) {
-    this.removeField(row);
     this.setState(row, "queued");
     this.queue.push(row);
     this.pump();
@@ -63,12 +63,19 @@ export default class extends Controller {
         this.setState(row, "failed");
       } else {
         this.setState(row, "done");
-        this.addField(row, blob.signed_id);
+        this.submitRow(row, blob.signed_id);
       }
       this.pump();
       this.refresh();
     });
     this.refresh();
+  }
+
+  // Hand the signed blob to the row's turbo-frame form; the server swaps in the moment's status.
+  submitRow(row, signedId) {
+    const form = row.querySelector("form");
+    form.querySelector("input[name='signed_id']").value = signedId;
+    form.requestSubmit();
   }
 
   retry(event) {
@@ -78,7 +85,6 @@ export default class extends Controller {
   removeFile(event) {
     const row = this.rowFor(event);
     this.queue = this.queue.filter((queued) => queued !== row);
-    this.removeField(row);
     row.remove();
     this.refresh();
   }
@@ -97,54 +103,18 @@ export default class extends Controller {
 
   setState(row, state) {
     row.dataset.state = state;
-    const text = state === "uploading" ? "0%" : this.labelsValue[state] || "";
-    row.querySelector(".upload-sidebar__status-text").textContent = text;
   }
 
   setProgress(row, percent) {
     row.querySelector(".upload-sidebar__bar").style.width = `${percent}%`;
-    if (row.dataset.state === "uploading") {
-      row.querySelector(".upload-sidebar__status-text").textContent = `${percent}%`;
-    }
-  }
-
-  addField(row, signedId) {
-    this.removeField(row);
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = "signed_ids[]";
-    input.value = signedId;
-    input.dataset.rowId = this.rowId(row);
-    this.fieldsTarget.appendChild(input);
-  }
-
-  removeField(row) {
-    const field = this.fieldsTarget.querySelector(`input[data-row-id="${this.rowId(row)}"]`);
-    if (field) field.remove();
   }
 
   rowFor(event) {
     return event.currentTarget.closest(".upload-sidebar__row");
   }
 
-  rowId(row) {
-    if (!row.dataset.rowId) {
-      row.dataset.rowId = `${this.idCounter++}`;
-    }
-    return row.dataset.rowId;
-  }
-
   refresh() {
-    const rows = Array.from(this.listTarget.children);
-    const done = rows.filter((row) => row.dataset.state === "done").length;
-    const pending = rows.some((row) => row.dataset.state === "uploading" || row.dataset.state === "queued");
-
-    this.countTarget.textContent = rows.length ? String(rows.length) : "";
-    this.submitTarget.disabled = done === 0 || pending;
-    this.submitTarget.textContent = pending
-      ? this.labelsValue.submitUploading
-      : done > 0
-        ? this.labelsValue.submitCount.replace("%{count}", done)
-        : this.labelsValue.submit;
+    const count = this.listTarget.children.length;
+    this.countTarget.textContent = count ? String(count) : "";
   }
 }

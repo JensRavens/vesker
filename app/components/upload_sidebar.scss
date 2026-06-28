@@ -159,19 +159,11 @@
     cursor: pointer;
   }
 
+  // Client-side failure indicator; the server result lives in the row's turbo frame instead.
   &__status {
-    flex: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--color-text-muted);
-  }
-
-  &__status-done,
-  &__status-failed {
     display: none;
+    flex: none;
+    color: var(--color-danger);
   }
 
   &__remove {
@@ -191,14 +183,6 @@
       background: var(--color-success);
     }
 
-    .upload-sidebar__status {
-      color: var(--color-success);
-    }
-
-    .upload-sidebar__status-done {
-      display: inline-flex;
-    }
-
     .upload-sidebar__remove {
       display: none;
     }
@@ -214,10 +198,6 @@
     }
 
     .upload-sidebar__status {
-      color: var(--color-danger);
-    }
-
-    .upload-sidebar__status-failed {
       display: inline-flex;
     }
   }

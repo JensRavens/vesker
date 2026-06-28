@@ -1,0 +1,24 @@
+.upload-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+
+  &--done {
+    color: var(--color-success);
+  }
+
+  &--duplicate {
+    color: var(--color-accent);
+  }
+
+  &--failed {
+    color: var(--color-danger);
+  }
+
+  &__text {
+    white-space: nowrap;
+  }
+}

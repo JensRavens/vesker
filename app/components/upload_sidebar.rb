@@ -1,6 +1,7 @@
 module Components
   class UploadSidebar < Base
     include Phlex::Rails::Helpers::FormWith
+    include Phlex::Rails::Helpers::TurboFrameTag
 
     prop :album, Album
 
@@ -17,8 +18,7 @@ module Components
     def controller_data
       {
         controller: "upload",
-        upload_direct_upload_url_value: rails_direct_uploads_path,
-        upload_labels_value: labels.to_json
+        upload_direct_upload_url_value: rails_direct_uploads_path
       }
     end
 
@@ -52,7 +52,10 @@ module Components
       end
     end
 
-    # One file row, cloned per upload by the Stimulus controller.
+    # One file row, cloned per upload by the Stimulus controller. The thumb/name/progress bar (and
+    # the client-side "Failed" indicator) stay JS-managed; the turbo frame holds a one-file form
+    # that the controller auto-submits once the direct upload finishes, and the server swaps the
+    # resulting status (added / duplicate) back into that frame.
     def row_template
       template(data: {upload_target: "rowTemplate"}) do
         li(class: "upload-sidebar__row", data: {state: "queued"}) do
@@ -65,10 +68,11 @@ module Components
               text(type: "caption-bold", element: :span) { t(".retry") }
             end
           end
-          span(class: "upload-sidebar__status") do
-            span(class: "upload-sidebar__status-done") { icon(name: "check-circle", size: 14) }
-            span(class: "upload-sidebar__status-failed") { icon(name: "error", size: 14) }
-            span(class: "upload-sidebar__status-text")
+          span(class: "upload-sidebar__status") { icon(name: "error", size: 14) }
+          turbo_frame_tag("") do
+            form_with(url: album_uploads_path(@album)) do |f|
+              f.hidden_field :signed_id, id: false
+            end
           end
           button(type: "button", class: "upload-sidebar__remove", aria_label: t(".remove"),
             data: {action: "upload#removeFile"}) { icon(name: "close", size: 18) }
@@ -78,22 +82,9 @@ module Components
 
     def footer
       div(class: "upload-sidebar__footer") do
-        form_with(url: album_uploads_path(@album)) do |f|
-          div(data: {upload_target: "fields"})
-          f.button t(".submit"), disabled: true, data: {upload_target: "submit"}
-        end
+        render Components::Button.new(variant: :primary,
+          data: {controller: "modal", action: "modal#close"}) { t(".close") }
       end
-    end
-
-    def labels
-      {
-        queued: t(".status.queued"),
-        done: t(".status.done"),
-        failed: t(".status.failed"),
-        submit: t(".submit"),
-        submitUploading: t(".submit_uploading"),
-        submitCount: t(".submit_count")
-      }
     end
   end
 end

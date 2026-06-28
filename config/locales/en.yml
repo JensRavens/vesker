@@ -76,15 +76,14 @@ en:
       cancel: "Cancel"
       dropzone_title: "Drop photos & videos here"
       dropzone_subhead: "or tap to choose from your device — add as many as you like"
-      submit: "Add to album"
-      submit_uploading: "Uploading…"
-      submit_count: "Add %{count} to album"
+      close: "Done"
       retry: "Retry"
       remove: "Remove file"
-      status:
-        queued: "Queued"
-        done: "Done"
-        failed: "Failed"
+    upload_status:
+      done: "Added"
+      failed: "Couldn’t add this"
+      duplicate: "Already added by %{name}"
+      duplicate_self: "You already added this"
     people_picker:
       header: "Show photos from"
       everyone: "Everyone"

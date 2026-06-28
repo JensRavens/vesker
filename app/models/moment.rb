@@ -27,6 +27,9 @@ class Moment < ApplicationRecord
   # captured_at is set only once analysis + warming finish, so its presence is the "ready" flag.
   scope :ready, -> { where.not(captured_at: nil) }
   scope :pending, -> { where(captured_at: nil) }
+  # Moments whose attached file blob has this MD5 checksum (populated at direct-upload time) —
+  # used to stop the same file being added to an album twice.
+  scope :with_checksum, ->(checksum) { joins(file_attachment: :blob).where(active_storage_blobs: {checksum:}) }
 
   broadcasts_refreshes_to :album
 
